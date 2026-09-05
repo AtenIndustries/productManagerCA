@@ -2,8 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductManager.DAL.Models;
 namespace ProductManager.DAL;
 
-public class ProductManagerDBContext : DbContext
+public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> options) : DbContext(options)
 {
-    public ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> options) : base(options) { }
     public DbSet<Product> Products { get; set; }
 }
