@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="ProductManager.DAL/ProductManager.DAL.csproj" />
   <Project Path="ProductManager.BAL/ProductManager.BAL.csproj" />
+  <Project Path="ProductManager.API.Tests/ProductManager.API.Tests.csproj" />
   <Project Path="ProductManager.API/ProductManager.API.csproj" />
 </Solution>
