@@ -30,4 +30,28 @@ public class ProductsController(IProductService productService) : Controller
         ProductDTO? created = await _productService.GetAsync(id, ct);
         return CreatedAtAction(nameof(Create), new { id }, created);
     }
+
+
+    [HttpPut("{number}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Update(int number, ProductDTO product, CancellationToken ct)
+    {
+        if (number != product.Number) {
+            return BadRequest($"Route number of {number} doesn't match request body number");
+        }
+        await _productService.UpdateAsync(product, ct);
+        return NoContent();
+    }
+
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _productService.DeleteAsync(id, ct);
+        return NoContent();
+    }
 }
