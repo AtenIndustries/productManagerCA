@@ -12,9 +12,9 @@ public class Product
     [Column("varchar(200)")]
     public string Name { get; set; }
     public int Quantity { get; set; }
-    [Column("date")]
+    [Column("created")]
     public DateTime Created { get; set; }
-    [Column("date")]
+    [Column("updated")]
     public DateTime Updated { get; set; }
 }
 
