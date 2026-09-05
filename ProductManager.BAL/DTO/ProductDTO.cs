@@ -5,8 +5,8 @@ namespace ProductManager.BAL.DTO;
 
 public class ProductDTO
 {
-    public int Id { get; set; }       
-    public string Name { get; set; }  
+    public int Id { get; private set; }       
+    public string Name { get; set; } = string.Empty;
     public int Quantity { get; set; }   //this property should be filtered out from requests
     public DateTime Created { get; set; } 
     public DateTime Updated { get; set; }  
