@@ -22,6 +22,15 @@ public class ProductsController(IProductService productService) : Controller
         return product is null ? NotFound() : Ok(product);
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<ProductDTO>>> Get(CancellationToken ct)
+    {
+        IEnumerable<ProductDTO>? products = await _productService.GetAllAsync( ct);
+        return products is null ? NotFound() : Ok(products);
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
