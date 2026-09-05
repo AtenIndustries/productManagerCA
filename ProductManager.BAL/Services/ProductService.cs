@@ -46,10 +46,11 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<int> UpdateAsync(ProductDTO productDTO, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Number == productDTO.Number, ct)
+        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Number == productDTO.Number, ct)
         ?? throw new ProductNotFoundException(productDTO.Number);
 
         Product updatedEntity = productDTO.ToEntity();
+        updatedEntity.Id = entity.Id;
         updatedEntity.Created = entity.Created;
         updatedEntity.Updated = DateTime.UtcNow;
         _ctx.Update(updatedEntity);
