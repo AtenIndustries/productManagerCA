@@ -14,7 +14,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<ProductDTO?> GetAsync(int number, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Number == number, ct);
+        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Number == number, ct);
         return entity is null ? null: ProductDTO.FromEntity(entity);
     }
 
