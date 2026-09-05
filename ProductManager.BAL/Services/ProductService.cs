@@ -18,9 +18,9 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entity is null ? null : ProductDTO.FromEntity(entity);
     }
 
-    public async Task<IEnumerable<Product>?> GetAllAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default)
     {
-        IEnumerable<Product>? entities = await _ctx.Products.AsNoTracking().ToListAsync(ct);
+        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().Select(p=> ProductDTO.FromEntity(p)).ToListAsync(ct);
         return entities;
     }
 
