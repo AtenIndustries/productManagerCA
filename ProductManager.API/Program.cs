@@ -14,7 +14,9 @@ var connectionString =
         + "'defaultConnectionString' not found.");
 
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>(options =>
-    options.UseSqlServer(connectionString, b=>b.MigrationsAssembly("ProductManager.DAL")));
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL")));
+
+builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 
 var app = builder.Build();
 
