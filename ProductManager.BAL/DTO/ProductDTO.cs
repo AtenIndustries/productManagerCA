@@ -3,14 +3,27 @@ using ProductManager.DAL.Models;
 
 namespace ProductManager.BAL.DTO;
 
-public class ProductDTO(Product product)
+public class ProductDTO
 {
-    public int Id { get; set; } = product.Id;
-    public int Number { get; set; } = product.Number;
-    public string Name { get; set; } = product.Name;
-    public int Quantity { get; set; } = product.Quantity;
-    public DateTime Created { get; set; } = product.Created;
-    public DateTime Updated { get; set; } = product.Updated;
+    public int Id { get; set; }  
+    public int Number { get; set; }  
+    public string Name { get; set; }  
+    public int Quantity { get; set; }   //this property should be filtered out from requests
+    public DateTime Created { get; set; } 
+    public DateTime Updated { get; set; }  
+
+    public static ProductDTO FromEntity(Product product)
+    {
+        return new ProductDTO
+        {
+            Id = product.Id,
+            Number = product.Number,
+            Name = product.Name,
+            Quantity = product.Quantity,
+            Created = product.Created,
+            Updated = product.Updated
+        };
+    }
 
     public Product ToEntity()
     {

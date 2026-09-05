@@ -12,17 +12,10 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 {
     private readonly ProductManagerDBContext _ctx = ctx;
 
-    public async Task<ProductDTO> GetAsync(int id, CancellationToken ct = default)
+    public async Task<ProductDTO?> GetAsync(int number, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct);
-        if (entity is null)
-        {
-            throw new ProductNotFoundException(id);
-        }
-        else
-        {
-            return new ProductDTO(entity);
-        }
+        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Number == number, ct);
+        return entity is null ? null: ProductDTO.FromEntity(entity);
     }
 
 
