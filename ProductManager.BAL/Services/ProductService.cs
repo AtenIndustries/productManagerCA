@@ -15,7 +15,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
     public async Task<ProductDTO?> GetAsync(int number, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Number == number, ct);
-        return entity is null ? null: ProductDTO.FromEntity(entity);
+        return entity is null ? null : ProductDTO.FromEntity(entity);
     }
 
 
@@ -99,5 +99,15 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
     {
         return ex.InnerException is Microsoft.Data.SqlClient.SqlException sqlEx
             && (sqlEx.Number == 2601 || sqlEx.Number == 2627);
+    }
+
+    public async Task<IEnumerable<ProductDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default)
+    {
+        List<ProductDTO>? products = await  _ctx.Products.AsNoTracking()
+                .Where(p => (name == null || p.Name.ToLower() == name.ToLower() || p.Name.ToLower().Contains(name.ToLower()))
+                && (min == null || p.Quantity >= min) && (max == null || p.Quantity <= max))
+                .Select(p=> ProductDTO.FromEntity(p))
+                .ToListAsync(ct);       
+        return products;
     }
 }
