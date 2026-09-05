@@ -12,9 +12,9 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 {
     private readonly ProductManagerDBContext _ctx = ctx;
 
-    public async Task<ProductDTO?> GetAsync(int number, CancellationToken ct = default)
+    public async Task<ProductDTO?> GetAsync(int id, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Number == number, ct);
+        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, ct);
         return entity is null ? null : ProductDTO.FromEntity(entity);
     }
 
@@ -35,7 +35,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(productDTO.Number, ex);
+            throw new ProductConcurrencyException(productDTO.Id, ex);
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
@@ -43,7 +43,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(productDTO.Number, ex);
+            throw new ProductPersistenceException(productDTO.Id, ex);
         }
 
         return entity.Id;
@@ -51,8 +51,8 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<int> UpdateAsync(ProductDTO productDTO, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Number == productDTO.Number, ct)
-        ?? throw new ProductNotFoundException(productDTO.Number);
+        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == productDTO.Id, ct)
+        ?? throw new ProductNotFoundException(productDTO.Id);
 
         Product updatedEntity = productDTO.ToEntity();
         updatedEntity.Id = entity.Id;
@@ -65,7 +65,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(productDTO.Number, ex);
+            throw new ProductConcurrencyException(productDTO.Id, ex);
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
@@ -73,15 +73,15 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(productDTO.Number, ex);
+            throw new ProductPersistenceException(productDTO.Id, ex);
         }
         return entity.Id;
     }
 
-    public async Task<bool> DeleteAsync(int number, CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Number == number, ct)
-        ?? throw new ProductNotFoundException(number);
+        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
+        ?? throw new ProductNotFoundException(id);
 
         _ctx.Remove(entity);
         try
@@ -90,11 +90,11 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (ProductConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(number, ex);
+            throw new ProductConcurrencyException(id, ex);
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(number, ex);
+            throw new ProductPersistenceException(id, ex);
         }
 
         return true;

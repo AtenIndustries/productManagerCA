@@ -13,12 +13,12 @@ public class ProductsController(IProductService productService) : Controller
 {
     private readonly IProductService _productService = productService;
 
-    [HttpGet("{number}")]
+    [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDTO>> Get(int number, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Get(int id, CancellationToken ct)
     {
-        ProductDTO? product = await _productService.GetAsync(number, ct);
+        ProductDTO? product = await _productService.GetAsync(id, ct);
         return product is null ? NotFound() : Ok(product);
     }
 
@@ -42,49 +42,49 @@ public class ProductsController(IProductService productService) : Controller
     }
 
 
-    [HttpPut("{number}")]
+    [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Update(int number, ProductDTO product, CancellationToken ct)
+    public async Task<IActionResult> Update(int id, ProductDTO product, CancellationToken ct)
     {
-        if (number != product.Number)
+        if (id != product.Id)
         {
-            return BadRequest($"Route number of {number} doesn't match request body number");
+            return BadRequest($"Route id of {id} doesn't match request body id");
         }
         await _productService.UpdateAsync(product, ct);
         return NoContent();
     }
 
 
-    [HttpDelete("{number}")]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int number, CancellationToken ct)
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        await _productService.DeleteAsync(number, ct);
+        await _productService.DeleteAsync(id, ct);
         return NoContent();
     }
 
     //Won't work directly from browser unless cors is configured.
-    [HttpPost("{number}/increment-stock/{quantity}")]
+    [HttpPost("{id}/increment-stock/{quantity}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> IncrementStock([FromRoute]StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return await AddQuantity(stockUpdateQuery.Number, stockUpdateQuery.Quantity, ct);
+        return await AddQuantity(stockUpdateQuery.Id, stockUpdateQuery.Quantity, ct);
     }
 
 
     //Won't work directly from browser unless cors is configured.
-    [HttpPost("{number}/decrement-stock/{quantity}")]
+    [HttpPost("{id}/decrement-stock/{quantity}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> DecrementStock([FromRoute]StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return await AddQuantity(stockUpdateQuery.Number, stockUpdateQuery.Quantity*-1, ct);
+        return await AddQuantity(stockUpdateQuery.Id, stockUpdateQuery.Quantity*-1, ct);
     }
 
     [HttpGet("search")]
@@ -106,9 +106,9 @@ public class ProductsController(IProductService productService) : Controller
     }
 
 
-    private async Task<ActionResult<ProductDTO>>  AddQuantity(int number, int quantity, CancellationToken ct)
+    private async Task<ActionResult<ProductDTO>> AddQuantity(int id, int quantity, CancellationToken ct)
     {
-        ProductDTO? product = await _productService.GetAsync(number, ct);
+        ProductDTO? product = await _productService.GetAsync(id, ct);
         if (product is null) {
             return NotFound();
         } 

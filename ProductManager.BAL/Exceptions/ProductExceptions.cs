@@ -19,7 +19,7 @@ public class ProductNotFoundException : Exception
 [Serializable]
 public class ProductConcurrencyException : Exception
 {
-    public ProductConcurrencyException(int number, Exception? innerException) : base(number.ToString(), innerException) { }
+    public ProductConcurrencyException(int id, Exception? innerException) : base(id.ToString(), innerException) { }
 
     public ProductConcurrencyException() : base() { }
 
@@ -31,7 +31,7 @@ public class ProductConcurrencyException : Exception
 [Serializable]
 public class DuplicateProductException : Exception
 {
-    public DuplicateProductException(ProductDTO product, Exception? innerException) : base(product.Number.ToString(), innerException) { }
+    public DuplicateProductException(ProductDTO product, Exception? innerException) : base(product.Name.ToString(), innerException) { }
 
     public DuplicateProductException() : base() { }
 
@@ -43,7 +43,7 @@ public class DuplicateProductException : Exception
 [Serializable]
 public class ProductPersistenceException : Exception
 {
-    public ProductPersistenceException(int number, Exception? innerException) : base($"Product with number {number} not saved", innerException) { }
+    public ProductPersistenceException(int id, Exception? innerException) : base($"Product with Id {id} not saved", innerException) { }
 
     public ProductPersistenceException() : base() { }
 

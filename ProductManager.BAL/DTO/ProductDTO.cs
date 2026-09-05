@@ -5,8 +5,7 @@ namespace ProductManager.BAL.DTO;
 
 public class ProductDTO
 {
-    public int Id { get; set; }  
-    public int Number { get; set; }  
+    public int Id { get; set; }       
     public string Name { get; set; }  
     public int Quantity { get; set; }   //this property should be filtered out from requests
     public DateTime Created { get; set; } 
@@ -16,8 +15,7 @@ public class ProductDTO
     {
         return new ProductDTO
         {
-            Id = product.Id,
-            Number = product.Number,
+            Id = product.Id, 
             Name = product.Name,
             Quantity = product.Quantity,
             Created = product.Created,
@@ -29,8 +27,7 @@ public class ProductDTO
     {
         return new Product
         {
-            Id = Id,
-            Number = Number,
+            Id = Id, 
             Name = Name,
             Quantity = Quantity,
             Created = Created,
