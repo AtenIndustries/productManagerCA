@@ -48,10 +48,8 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Update(int id, ProductDTO product, CancellationToken ct)
     {
-        if (id != product.Id)
-        {
-            return BadRequest($"Route id of {id} doesn't match request body id");
-        }
+        //Important note: ProductDTO.id is a private set field, so verifying against the query id
+        //              will lead to false BadRequestReturns 
         await _productService.UpdateAsync(product, ct);
         return NoContent();
     }
