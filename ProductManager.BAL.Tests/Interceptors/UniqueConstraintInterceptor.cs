@@ -36,7 +36,9 @@ public class UniqueConstraintInterceptor<T>(string fieldName) : SaveChangesInter
             //Get existing value in DB
             var existsInDB = context.Set<T>().Any(p => EF.Property<object>(p,FieldName).Equals(value));
             //Gets existing from current update or create operation
+#pragma warning disable CS8602 // Nulls already filtered above
             var existsOnSameBatch = values.Count(v => v.Equals(value)) > 1;
+#pragma warning restore CS8602 //  Nulls already filtered above
 
             if (existsOnSameBatch || existsInDB){
                 throw new DuplicateProductException();
