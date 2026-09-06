@@ -3,14 +3,13 @@ using ProductManager.DAL;
 using ProductManager.BAL.Services;
 using ProductManager.BAL.DTO;
 using ProductManager.DAL.Models;
-using ProductManager.BAL.Tests.Interceptors;
-using System.Data;
+using ProductManager.BAL.Tests.Interceptors; 
 using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
-public class CrearteAsyncTests
+public class CreateAsyncTests
 {
     private static ProductManagerDBContext CreateContext()
     {
