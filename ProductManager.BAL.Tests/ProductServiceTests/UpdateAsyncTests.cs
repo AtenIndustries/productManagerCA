@@ -22,7 +22,7 @@ public class UpdateAsyncTests
     [InlineData(2, "PRD2-Upgraded", 4)]
     [InlineData(3, "PRD3-Downgraded", 2)]
     [InlineData(1, "PRD1-New Release", 5)]
-    public async Task UpdateAsync_UpdatesProductWithSuccess(int updId, string newName, int newQuantity)
+    public async Task UpdateAsync_ValidParams_UpdatesProductSuccessfully(int updId, string newName, int newQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductDTO updPrd = new()
@@ -48,7 +48,7 @@ public class UpdateAsyncTests
     [InlineData(2, 4)]
     [InlineData(3, 2)]
     [InlineData(1, 5)]
-    public async Task UpdateAsync_UpdateQuantityButKeepingNameDoesNotThrowDuplicateException(int updId, int newQuantity)
+    public async Task UpdateAsync_SameNameSameIdDifferentQuantity_DoesNotThrowDuplicateProductException(int updId, int newQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
 
@@ -69,7 +69,7 @@ public class UpdateAsyncTests
     [InlineData(990)]
     [InlineData(12)]
     [InlineData(15)]
-    public async Task UpdateAsync_ThrowsProductNotFoundException_OnNonExistingProduct(int updId)
+    public async Task UpdateAsync_NonExistingProduct_ThrowsProductNotFoundException(int updId)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
@@ -82,7 +82,7 @@ public class UpdateAsyncTests
     [InlineData(3, "PRD2", 4)]
     [InlineData(2, "PRD1", 2)]
     [InlineData(1, "PRD3", 5)]
-    public async Task UpdateAsync_ThrowsDuplicateProductException_WhenTryingToUpdateNameToAnExistingOne(int updId, string updName, int updQuantity)
+    public async Task UpdateAsync_NameAlreadyUsedByAnotherProduct_ThrowsDuplicateProductException(int updId, string updName, int updQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
@@ -102,7 +102,7 @@ public class UpdateAsyncTests
 
 
     [Fact]
-    public async Task UpdateAsync_NegativeQuantityValueShouldBeSavedAsZero()
+    public async Task UpdateAsync_NegativeQuantity_IsSetToZero()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
@@ -126,7 +126,7 @@ public class UpdateAsyncTests
 
 
     [Fact]
-    public async Task UpdateAsync_ThrowsProductConflictException_OnConcurrencyConflict()
+    public async Task UpdateAsync_ConcurrentModificationDetected_ThrowsProductConflictException()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();

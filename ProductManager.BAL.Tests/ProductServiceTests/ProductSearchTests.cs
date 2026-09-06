@@ -19,7 +19,7 @@ public class ProductSearchTests
     [InlineData(1, "CHEM2", 1, null)]
     [InlineData(2, "CHEM", 1, null)]
     [InlineData(6, null, null, null)]
-    public async Task SearchByAsync_ReturnsTheExpectedAmountOfResults(int expectedNumberOfResults, string? name, int? min, int? max)
+    public async Task SearchByAsync_VariousNameAndStockFilters_ReturnsExpectedResultCount(int expectedNumberOfResults, string? name, int? min, int? max)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = new(ctx);
@@ -34,7 +34,7 @@ public class ProductSearchTests
     [InlineData(true, 2)]
     [InlineData(false, 7)]
     [InlineData(false, 99)]
-    public async Task GetAsync_ReturnsExpectedResult(bool expectResult, int searchId)
+    public async Task GetAsync_ExistingOrNonExistingId_ReturnsExpectedResult(bool expectResult, int searchId)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = new(ctx);
@@ -44,7 +44,7 @@ public class ProductSearchTests
     }
 
     [Fact]
-    public async Task GetAllAsync_GetsAllResults()
+    public async Task GetAllAsync_NoFilter_ReturnsAllProducts()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = new(ctx);

@@ -15,7 +15,7 @@ public class CreateAsyncTests
     [InlineData(false, "PRD1", "PRD1")]
     [InlineData(true, "PRD1", "PRD2")]
     [InlineData(false, "PRD1", "PRD2", "PRD1")]
-    public async Task CreateAsync_CreatesProductsWithExpectedSuccess(bool expectSuccess, params string[] names)
+    public async Task CreateAsync_UniqueOrDuplicateNames_SucceedsOrThrowsOnDuplicate(bool expectSuccess, params string[] names)
     {
         if (names.Length == 0)
         {
@@ -40,7 +40,7 @@ public class CreateAsyncTests
     }
 
     [Fact]
-    public async Task CreateAsync_NegativeQuantityValueShouldBeSavedAsZero()
+    public async Task CreateAsync_NegativeQuantity_IsSetToZero()
     {
         await using var ctx = ContextGenerators.CreateCtxWConcurrencyTknAndUnkCnstrntInterceptor();
         ProductDTO newPrd = new ProductDTO
@@ -61,7 +61,7 @@ public class CreateAsyncTests
     }
 
     [Fact]
-    public async Task CreateAsync_ExpectProductConcurrencyException()
+    public async Task CreateAsync_ConcurrentModificationDetected_ThrowsProductConcurrencyException()
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
         ProductService service = new(ctx);
