@@ -158,8 +158,8 @@ public class ProductsSearchTests
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         int resultId = -1;
         if (createdResult is not null && createdResult.RouteValues is not null && createdResult.RouteValues["id"] is int v)
-        { 
-            resultId = v; 
+        {
+            resultId = v;
         }
         Assert.Equal(id, resultId);
     }
@@ -178,8 +178,8 @@ public class ProductsSearchTests
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         int resultId = -1;
         if (createdResult is not null && createdResult.RouteValues is not null && createdResult.RouteValues["id"] is int v)
-        { 
-            resultId = v; 
+        {
+            resultId = v;
         }
         Assert.Equal(id, resultId);
     }
@@ -195,9 +195,7 @@ public class ProductsSearchTests
             .Setup(s => s.UpdateAsync(id, prd, CancellationToken.None))
             .ReturnsAsync(prd);
 
-        var result = await _controller.Update(id,prd, CancellationToken.None);
+        var result = await _controller.Update(id, prd, CancellationToken.None);
         var createdResult = Assert.IsType<NoContentResult>(result);
     }
-
-
 }
