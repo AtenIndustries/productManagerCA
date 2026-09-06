@@ -71,7 +71,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> IncrementStock([FromRoute]StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return await AddQuantity(stockUpdateQuery.Id, stockUpdateQuery.Quantity, ct);
+        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, stockUpdateQuery.Quantity, ct));
     }
 
 
@@ -82,7 +82,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> DecrementStock([FromRoute]StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return await AddQuantity(stockUpdateQuery.Id, stockUpdateQuery.Quantity*-1, ct);
+        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, -1*stockUpdateQuery.Quantity, ct));
     }
 
     [HttpGet("search")]
@@ -100,18 +100,4 @@ public class ProductsController(IProductService productService) : Controller
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
         return Ok(products);
     }
-
-
-    private async Task<ActionResult<ProductDTO>> AddQuantity(int id, int quantity, CancellationToken ct)
-    {
-        ProductDTO? product = await _productService.GetAsync(id, ct);
-        if (product is null) {
-            return NotFound();
-        } 
-        product.Quantity+=quantity;
-        product.Quantity = Math.Max(product.Quantity, 0); 
-        ProductDTO prd = await _productService.UpdateAsync(id, product, ct);
-        return Ok(prd);
-    }
-
 }

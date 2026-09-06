@@ -67,7 +67,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         entity.Name = productDTO.Name;
         entity.Quantity = Math.Max(productDTO.Quantity, 0);//Prevent negative values
         entity.Updated = DateTime.Now;
- 
+
         try
         {
             await _ctx.SaveChangesAsync(ct);
@@ -124,5 +124,25 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
                 .Select(p => ProductDTO.FromEntity(p))
                 .ToListAsync(ct);
         return products;
+    }
+
+    public async Task<ProductDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default)
+    {
+        Product entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
+            ?? throw new ProductNotFoundException(id);
+
+        entity.Quantity = Math.Max(entity.Quantity + delta, 0);
+        entity.Updated = DateTime.UtcNow;
+
+        try
+        {
+            await _ctx.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new ProductConcurrencyException(id, ex);
+        }
+
+        return ProductDTO.FromEntity(entity);
     }
 }
