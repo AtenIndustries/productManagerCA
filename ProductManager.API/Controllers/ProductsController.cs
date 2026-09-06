@@ -38,7 +38,7 @@ public class ProductsController(IProductService productService) : Controller
     public async Task<ActionResult<ProductDTO>> Create(ProductDTO product, CancellationToken ct)
     {
         int id = await _productService.CreateAsync(product, ct);
-        ProductDTO? created = await _productService.GetAsync(id, ct);
+        ProductDTO? created = await _productService.GetAsync(id, ct); 
         return CreatedAtAction(nameof(Create), new { id }, created);
     }
 
