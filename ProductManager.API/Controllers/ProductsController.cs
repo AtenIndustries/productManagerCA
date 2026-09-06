@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.API.Contracts;
 using ProductManager.BAL.DTO;
@@ -28,7 +29,7 @@ public class ProductsController(IProductService productService) : Controller
     public async Task<ActionResult<IEnumerable<ProductDTO>>> Get(CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.GetAllAsync( ct);
-        return products is null ? NotFound() : Ok(products);
+        return Ok(products);
     }
 
     [HttpPost]
@@ -48,8 +49,8 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Update(int id, ProductDTO product, CancellationToken ct)
     {
-        //Important note: ProductDTO.id is a private set field, so verifying against the query id
-        //              will lead to false BadRequestReturns 
+        //Important note: ProductDTO.id is a init set field, so verifying against the query id
+        //will lead to false BadRequestReturns 
         await _productService.UpdateAsync(id, product, ct);
         return NoContent();
     }
@@ -87,20 +88,18 @@ public class ProductsController(IProductService productService) : Controller
 
     [HttpGet("search")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Search([FromQuery] string? name, CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(name, null, null, ct);
-        return products == null ? NotFound() : Ok(products);
+        return Ok(products);
     }
 
     [HttpGet("stock-level")]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)] 
     public async Task<IActionResult> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
-        return products == null ? NotFound() : Ok(products);
+        return Ok(products);
     }
 
 
