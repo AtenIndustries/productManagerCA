@@ -121,7 +121,7 @@ public class UpdateAsyncTests
 
 
     [Fact]
-    public async Task UpdateAsync_NegativeQuantityValueShouldBeSavedAsZero() //Maybe we need to fix something in the service
+    public async Task UpdateAsync_NegativeQuantityValueShouldBeSavedAsZero() 
     {
         await using var ctx = CreateContext();
         ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", Quantity = 2, ConcurrencyToken = [1, 1, 1, 1] });
