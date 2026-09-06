@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductManager.DAL;
 using ProductManager.BAL.Services;
 using ProductManager.BAL.Exceptions;
 using ProductManager.BAL.DTO;
@@ -9,15 +8,7 @@ namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
 public class UpdateAsyncTests
-{
-    private static ProductManagerDBContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        return new ProductManagerDBContext(options);
-    }
-
+{ 
     [Theory]
     [InlineData(2, "PRD2-Upgraded", 4)]
     [InlineData(3, "PRD3-Downgraded", 2)]
