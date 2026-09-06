@@ -27,6 +27,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
     public async Task<int> CreateAsync(ProductDTO productDTO, CancellationToken ct = default)
     {
         Product entity = productDTO.ToEntity();
+        entity.Quantity = Math.Max(entity.Quantity, 0);
         entity.Created = DateTime.UtcNow;
         _ctx.Add(entity);
         try
@@ -64,7 +65,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
 
         entity.Name = productDTO.Name;
-        entity.Quantity = productDTO.Quantity;
+        entity.Quantity = Math.Max(productDTO.Quantity,0);//Prevent negative values
         entity.Updated = DateTime.Now;
  
         _ctx.Update(entity);
