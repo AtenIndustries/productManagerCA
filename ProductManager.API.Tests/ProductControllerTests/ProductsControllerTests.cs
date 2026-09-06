@@ -215,14 +215,14 @@ public class ProductsSearchTests
     [Fact]
     public async Task IncrementStock_ReturnsOk_WhenStockIncrements()
     {
-        int id = 1; 
+        int id = 1;
         ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
         ProductDTO incrementedPrd = new() { Id = id, Name = "PRD", Quantity = 4 };
         _serviceMock
-            .Setup(s => s.AdjustStockAsync(id,1, CancellationToken.None))
+            .Setup(s => s.AdjustStockAsync(id, 1, CancellationToken.None))
             .ReturnsAsync(incrementedPrd);
- 
-        var result = await _controller.IncrementStock(new StockUpdateQuery{Id=id, Quantity=1}, CancellationToken.None);
+
+        var result = await _controller.IncrementStock(new StockUpdateQuery { Id = id, Quantity = 1 }, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(incrementedPrd, okResult.Value);
     }
@@ -230,14 +230,14 @@ public class ProductsSearchTests
     [Fact]
     public async Task DecrementStock_ReturnsOk_WhenStockIncrements()
     {
-        int id = 1; 
+        int id = 1;
         ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
         ProductDTO decrementedPrd = new() { Id = id, Name = "PRD", Quantity = 2 };
         _serviceMock
-            .Setup(s => s.AdjustStockAsync(id,-1, CancellationToken.None))
+            .Setup(s => s.AdjustStockAsync(id, -1, CancellationToken.None))
             .ReturnsAsync(decrementedPrd);
- 
-        var result = await _controller.DecrementStock(new StockUpdateQuery{Id=id, Quantity=1}, CancellationToken.None);
+
+        var result = await _controller.DecrementStock(new StockUpdateQuery { Id = id, Quantity = 1 }, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(decrementedPrd, okResult.Value);
     }
