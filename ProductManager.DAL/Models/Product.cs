@@ -16,5 +16,8 @@ public class Product
     public DateTime Created { get; set; }
     [Column("updated")]
     public DateTime Updated { get; set; }
+
+    [Timestamp]
+    public byte[] ConcurrencyToken {get; set;} 
 }
 
