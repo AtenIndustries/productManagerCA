@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using ProductManager.DAL.Models;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
+using ProductManager.DAL.Migrations;
 
 namespace ProductManager.BAL.DTO;
 
@@ -16,6 +17,7 @@ public class ProductDTO
     public int Quantity { get; set; }
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
+    public byte[] ConcurrencyToken {get;init;} = [];
 
     public static ProductDTO FromEntity(Product product)
     {
@@ -25,7 +27,8 @@ public class ProductDTO
             Name = product.Name,
             Quantity = product.Quantity,
             Created = product.Created,
-            Updated = product.Updated
+            Updated = product.Updated,
+            ConcurrencyToken=product.ConcurrencyToken
         };
     }
 

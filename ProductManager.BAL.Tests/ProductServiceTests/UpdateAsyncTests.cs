@@ -33,8 +33,8 @@ public class UpdateAsyncTests
 
         ProductService service = new(ctx);
 
-        int id = await service.UpdateAsync(updId, updPrd, CancellationToken.None);
-        Assert.Equal(updId, id);
+        ProductDTO prd = await service.UpdateAsync(updId, updPrd, CancellationToken.None);
+        Assert.Equal(updId, prd.Id);
 
         Product? updEntity = await ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == updId);
 

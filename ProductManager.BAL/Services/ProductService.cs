@@ -50,7 +50,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entity.Id;
     }
 
-    public async Task<int> UpdateAsync(int id, ProductDTO productDTO, CancellationToken ct = default)
+    public async Task<ProductDTO> UpdateAsync(int id, ProductDTO productDTO, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(productDTO.Id);
@@ -67,8 +67,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         entity.Name = productDTO.Name;
         entity.Quantity = Math.Max(productDTO.Quantity, 0);//Prevent negative values
         entity.Updated = DateTime.Now;
-
-        _ctx.Update(entity);
+ 
         try
         {
             await _ctx.SaveChangesAsync(ct);
@@ -85,7 +84,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         {
             throw new ProductPersistenceException(productDTO.Id, ex);
         }
-        return entity.Id;
+        return ProductDTO.FromEntity(entity);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)

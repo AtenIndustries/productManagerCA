@@ -13,7 +13,7 @@ namespace ProductManager.API.Controllers;
 public class ProductsController(IProductService productService) : Controller
 {
     private readonly IProductService _productService = productService;
-
+    
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -44,15 +44,15 @@ public class ProductsController(IProductService productService) : Controller
 
 
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Update(int id, ProductDTO product, CancellationToken ct)
     {
         //Important note: ProductDTO.id is a init set field, so verifying against the query id
         //will lead to false BadRequestReturns 
-        await _productService.UpdateAsync(id, product, ct);
-        return NoContent();
+        ProductDTO updPrd = await _productService.UpdateAsync(id, product, ct);
+        return Ok(updPrd);
     }
 
 
@@ -65,7 +65,6 @@ public class ProductsController(IProductService productService) : Controller
         return NoContent();
     }
 
-    //Won't work directly from browser unless cors is configured.
     [HttpPost("{id}/increment-stock/{quantity}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

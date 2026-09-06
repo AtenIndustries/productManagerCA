@@ -193,11 +193,10 @@ public class ProductsSearchTests
 
         _serviceMock
             .Setup(s => s.UpdateAsync(id, prd, CancellationToken.None))
-            .ReturnsAsync(id);
+            .ReturnsAsync(prd);
 
         var result = await _controller.Update(id,prd, CancellationToken.None);
         var createdResult = Assert.IsType<NoContentResult>(result);
-
     }
 
 
