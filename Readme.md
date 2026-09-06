@@ -3,10 +3,13 @@
 //On the root
 
 //Create migration
-dotnet ef migrations add  AddProductConcurrencyToken --project ProductManager.DAL --startup-project ProductManager.API
+dotnet ef migrations add FixNameColumn --project ProductManager.DAL --startup-project ProductManager.API
 
 //Commit migration
 dotnet ef  database update --project ProductManager.DAL --startup-project ProductManager.API
+
+//Undo all
+dotnet ef  database update 0 --project ProductManager.DAL --startup-project ProductManager.API
 
 //Remove a migration
 dotnet ef migrations remove  --project ProductManager.DAL --startup-project ProductManager.API
@@ -15,7 +18,7 @@ dotnet ef migrations remove  --project ProductManager.DAL --startup-project Prod
 //Mention the error handling that is needed for sequence when reaches max
 //Mention that a good alternative would be using snowflake, with stuff else to create ids in a distributed database context
 
-
+//Mention that I tried to make tests for UpdateAsync_ThrowsProductPersistenceException_OnNameLargerThan200Chars but efmemory limitations
 
 Install DB
 
