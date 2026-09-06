@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
-public class ProductServiceTests
+public class UpdateAsyncTests
 {
     private static ProductManagerDBContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()) // BD nova e isolada por teste
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         return new ProductManagerDBContext(options);
     }
@@ -58,12 +58,12 @@ public class ProductServiceTests
     public async Task UpdateAsync_UpdateQuantityButKeepingNameDoesNotThrowDuplicateException(int updId, int newQuantity)
     {
         await using var ctx = CreateContext();
-                ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
-                ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
-                ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
+        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
+        ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
+        ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
         await ctx.SaveChangesAsync();
 
-        Product? entity = await ctx.Products.FirstOrDefaultAsync(p=>p.Id==updId);
+        Product? entity = await ctx.Products.FirstOrDefaultAsync(p => p.Id == updId);
         Assert.NotNull(entity);
         ctx.ChangeTracker.Clear();
 
@@ -71,7 +71,7 @@ public class ProductServiceTests
         updPrd.Quantity = newQuantity;
 
         ProductService service = new(ctx);
-        Exception? exception = await Record.ExceptionAsync(async ()=>await service.UpdateAsync(updId, updPrd, CancellationToken.None));
+        Exception? exception = await Record.ExceptionAsync(async () => await service.UpdateAsync(updId, updPrd, CancellationToken.None));
         Assert.False(exception is DuplicateProductException);
     }
 
