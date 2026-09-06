@@ -49,16 +49,25 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entity.Id;
     }
 
-    public async Task<int> UpdateAsync(ProductDTO productDTO, CancellationToken ct = default)
+    public async Task<int> UpdateAsync(int id, ProductDTO productDTO, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == productDTO.Id, ct)
+        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(productDTO.Id);
 
-        Product updatedEntity = productDTO.ToEntity();
-        updatedEntity.Id = entity.Id;
-        updatedEntity.Created = entity.Created;
-        updatedEntity.Updated = DateTime.UtcNow;
-        _ctx.Update(updatedEntity);
+        //Note: The in memory database does not care about Unique constrainsts.
+        //      Just a piece of code to pass some unit tests.
+        bool duplicateExists = await _ctx.Products
+            .AnyAsync(p => p.Name == productDTO.Name && p.Id != id, ct);
+        if (duplicateExists)
+        {
+            throw new DuplicateProductException(productDTO);
+        }
+
+        entity.Name = productDTO.Name;
+        entity.Quantity = productDTO.Quantity;
+        entity.Updated = DateTime.Now;
+ 
+        _ctx.Update(entity);
         try
         {
             await _ctx.SaveChangesAsync(ct);

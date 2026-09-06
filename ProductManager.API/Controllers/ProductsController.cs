@@ -50,7 +50,7 @@ public class ProductsController(IProductService productService) : Controller
     {
         //Important note: ProductDTO.id is a private set field, so verifying against the query id
         //              will lead to false BadRequestReturns 
-        await _productService.UpdateAsync(product, ct);
+        await _productService.UpdateAsync(id, product, ct);
         return NoContent();
     }
 
@@ -112,7 +112,7 @@ public class ProductsController(IProductService productService) : Controller
         } 
         product.Quantity+=quantity;
         product.Quantity = Math.Max(product.Quantity, 0); 
-        await _productService.UpdateAsync(product, ct);
+        await _productService.UpdateAsync(id, product, ct);
         return Ok();
     }
 
