@@ -9,7 +9,7 @@ public class Product
 {
     [Key]
     public int Id { get; set; } 
-    [Column("varchar(200)")]
+    [Column(TypeName="varchar(200)")]
     public required string Name { get; set; }
     public int Quantity { get; set; }
     [Column("created")]
