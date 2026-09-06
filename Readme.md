@@ -18,7 +18,15 @@ dotnet ef migrations remove  --project ProductManager.DAL --startup-project Prod
 //Mention the error handling that is needed for sequence when reaches max
 //Mention that a good alternative would be using snowflake, with stuff else to create ids in a distributed database context
 
-//Mention that I tried to make tests for UpdateAsync_ThrowsProductPersistenceException_OnNameLargerThan200Chars but efmemory limitations
+//Mention that I tried to make tests for UpdateAsync_ThrowsProductPersistenceException_OnNameLargerThan200Chars but efmemory 
+
+//Mention that integration tests between controller and middleware would be needed to test situations like getting specific status 
+
+//Mention that for a concurrency reason, verification of product existing makes more sense in BAL, closer to modifications. Is safer for distributed envs
+
+results
+
+limitations
 
 Install DB
 

@@ -47,7 +47,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Update(int id, ProductDTO product, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Update(int id, ProductDTO product, CancellationToken ct)
     {
         //Important note: ProductDTO.id is a init set field, so verifying against the query id
         //will lead to false BadRequestReturns 
@@ -110,8 +110,8 @@ public class ProductsController(IProductService productService) : Controller
         } 
         product.Quantity+=quantity;
         product.Quantity = Math.Max(product.Quantity, 0); 
-        await _productService.UpdateAsync(id, product, ct);
-        return Ok();
+        ProductDTO prd = await _productService.UpdateAsync(id, product, ct);
+        return Ok(prd);
     }
 
 }
