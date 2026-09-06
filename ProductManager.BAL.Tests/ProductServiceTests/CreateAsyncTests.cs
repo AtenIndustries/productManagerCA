@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductManager.DAL;
 using ProductManager.BAL.Services;
 using ProductManager.BAL.DTO;
-using ProductManager.DAL.Models; 
+using ProductManager.DAL.Models;
 using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
@@ -64,7 +64,7 @@ public class CreateAsyncTests
     public async Task CreateAsync_ExpectProductConcurrencyException()
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
-        ProductService service = new (ctx);
-        await Assert.ThrowsAsync<ProductConcurrencyException>(()=>service.CreateAsync(new ProductDTO{Id=1,Quantity=2,Name="PRD"}));
+        ProductService service = new(ctx);
+        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO { Id = 1, Quantity = 2, Name = "PRD" }));
     }
 }
