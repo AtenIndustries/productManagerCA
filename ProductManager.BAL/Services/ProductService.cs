@@ -20,7 +20,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default)
     {
-        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().Select(p=> ProductDTO.FromEntity(p)).ToListAsync(ct);
+        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().Select(p => ProductDTO.FromEntity(p)).ToListAsync(ct);
         return entities;
     }
 
@@ -65,9 +65,9 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
 
         entity.Name = productDTO.Name;
-        entity.Quantity = Math.Max(productDTO.Quantity,0);//Prevent negative values
+        entity.Quantity = Math.Max(productDTO.Quantity, 0);//Prevent negative values
         entity.Updated = DateTime.Now;
- 
+
         _ctx.Update(entity);
         try
         {
@@ -90,15 +90,16 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
-        ?? throw new ProductNotFoundException(id);
-
-        _ctx.Remove(entity);
         try
         {
+            Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
+            ?? throw new ProductNotFoundException(id);
+
+            _ctx.Remove(entity);
+
             await _ctx.SaveChangesAsync(ct);
         }
-        catch (ProductConcurrencyException ex)
+        catch (DbUpdateConcurrencyException ex)
         {
             throw new ProductConcurrencyException(id, ex);
         }
@@ -118,11 +119,11 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
 
     public async Task<IEnumerable<ProductDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default)
     {
-        List<ProductDTO>? products = await  _ctx.Products.AsNoTracking()
+        List<ProductDTO>? products = await _ctx.Products.AsNoTracking()
                 .Where(p => (name == null || p.Name.ToLower() == name.ToLower() || p.Name.ToLower().Contains(name.ToLower()))
                 && (min == null || p.Quantity >= min) && (max == null || p.Quantity <= max))
-                .Select(p=> ProductDTO.FromEntity(p))
-                .ToListAsync(ct);       
+                .Select(p => ProductDTO.FromEntity(p))
+                .ToListAsync(ct);
         return products;
     }
 }
