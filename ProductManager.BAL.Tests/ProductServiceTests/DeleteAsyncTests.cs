@@ -7,22 +7,7 @@ using ProductManager.BAL.Exceptions;
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 public class DeleteAsyncTests
-{
-    private static ProductManagerDBContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        return new ProductManagerDBContext(options);
-    }
-    private static ProductManagerDBContext CreateContextWithForcedException<T>() where T: Exception, new()
-    {
-        var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .AddInterceptors(new ForceExceptionInterceptor<T>())
-            .Options;
-        return new ProductManagerDBContext(options);
-    }
+{ 
 
     [Theory]
     [InlineData(1, true)]
@@ -31,7 +16,7 @@ public class DeleteAsyncTests
     [InlineData(4, false)]
     public async Task DeleteAsync_UpdatesProductWithSuccess(int delId, bool expectSuccess)
     {
-        await using var ctx = CreateContext();
+        await using var ctx = ContextGenerators.CreateSimpleContext();
         ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
         ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
         ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
@@ -51,7 +36,7 @@ public class DeleteAsyncTests
     [Fact]
     public async Task DeleteAsync_ExpectProductConcurrencyException_OnDbUpdateConcurrencyException()
     {
-        await using var ctx = CreateContextWithForcedException<DbUpdateConcurrencyException>(); 
+        await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>(); 
         ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
         ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
         ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
@@ -66,7 +51,7 @@ public class DeleteAsyncTests
     [Fact]
     public async Task DeleteAsync_ExpectProductPersistenceException_OnDbUpdateException()
     {
-        await using var ctx = CreateContextWithForcedException<DbUpdateException>(); 
+        await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateException>(); 
         ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
         ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
         ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });

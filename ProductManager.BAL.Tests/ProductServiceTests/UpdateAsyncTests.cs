@@ -3,7 +3,7 @@ using ProductManager.DAL;
 using ProductManager.BAL.Services;
 using ProductManager.BAL.Exceptions;
 using ProductManager.BAL.DTO;
-using ProductManager.DAL.Models; 
+using ProductManager.DAL.Models;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
@@ -24,13 +24,7 @@ public class UpdateAsyncTests
     [InlineData(1, "PRD1-New Release", 5)]
     public async Task UpdateAsync_UpdatesProductWithSuccess(int updId, string newName, int newQuantity)
     {
-        await using var ctx = CreateContext();
-        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
-        await ctx.SaveChangesAsync();
-
-
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductDTO updPrd = new()
         {
             Name = newName,
@@ -56,11 +50,7 @@ public class UpdateAsyncTests
     [InlineData(1, 5)]
     public async Task UpdateAsync_UpdateQuantityButKeepingNameDoesNotThrowDuplicateException(int updId, int newQuantity)
     {
-        await using var ctx = CreateContext();
-        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
-        await ctx.SaveChangesAsync();
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
 
         Product? entity = await ctx.Products.FirstOrDefaultAsync(p => p.Id == updId);
         Assert.NotNull(entity);
@@ -81,11 +71,7 @@ public class UpdateAsyncTests
     [InlineData(15)]
     public async Task UpdateAsync_ThrowsProductNotFoundException_OnNonExistingProduct(int updId)
     {
-        await using var ctx = CreateContext();
-        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
-        await ctx.SaveChangesAsync();
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
         ProductService service = new(ctx);
@@ -98,11 +84,7 @@ public class UpdateAsyncTests
     [InlineData(1, "PRD3", 5)]
     public async Task UpdateAsync_ThrowsDuplicateProductException_WhenTryingToUpdateNameToAnExistingOne(int updId, string updName, int updQuantity)
     {
-        await using var ctx = CreateContext();
-        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", ConcurrencyToken = [1, 1, 1, 1] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 2, Name = "PRD2", ConcurrencyToken = [2, 2, 2, 2] });
-        ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
-        await ctx.SaveChangesAsync();
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
         ProductDTO updPrd = new ProductDTO
@@ -120,11 +102,9 @@ public class UpdateAsyncTests
 
 
     [Fact]
-    public async Task UpdateAsync_NegativeQuantityValueShouldBeSavedAsZero() 
+    public async Task UpdateAsync_NegativeQuantityValueShouldBeSavedAsZero()
     {
-        await using var ctx = CreateContext();
-        ctx.Products.Add(new DAL.Models.Product { Id = 1, Name = "PRD1", Quantity = 2, ConcurrencyToken = [1, 1, 1, 1] });
-        await ctx.SaveChangesAsync();
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
         ProductDTO updPrd = new ProductDTO
@@ -148,19 +128,16 @@ public class UpdateAsyncTests
     [Fact]
     public async Task UpdateAsync_ThrowsProductConflictException_OnConcurrencyConflict()
     {
-        await using var ctx = CreateContext();
-        var product = new Product { Id = 1, Name = "PRD1", Quantity = 3, ConcurrencyToken = [1, 1, 1, 1] };
-        ctx.Products.Add(product);
-        await ctx.SaveChangesAsync();
+        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductService service = new ProductService(ctx);
+        ProductService service = new(ctx);
 
         // Simulates that another entry already saved a different version
         var entity = await ctx.Products.FirstAsync(p => p.Id == 1);
         ctx.Entry(entity).OriginalValues[nameof(Product.ConcurrencyToken)] = new byte[] { 2, 2, 2, 2 };
 
-        ProductDTO updateDto = new ProductDTO { Name = "PRD1-Upd", Quantity = 5 };
+        ProductDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
 
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.UpdateAsync(1, updateDto, CancellationToken.None));
     }
