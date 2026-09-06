@@ -7,14 +7,14 @@ using ProductManager.BAL.Exceptions;
 using ProductManager.BAL.Services.Interfaces;
 using ProductManager.API.Contracts;
 
-namespace ProductManager.API.Tests.Controllers;
+namespace ProductManager.API.Tests.ProductControllerTests;
 
-public class ProductsControllerTests
+public class ProductsSearchTests
 {
     private readonly Mock<IProductService> _serviceMock;
     private readonly ProductsController _controller;
 
-    public ProductsControllerTests()
+    public ProductsSearchTests()
     {
         _serviceMock = new Mock<IProductService>();
         _controller = new ProductsController(_serviceMock.Object);
