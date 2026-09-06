@@ -5,17 +5,20 @@ namespace ProductManager.BAL.DTO;
 
 public class ProductDTO
 {
-    public int Id { get; private set; }       
+    public int Id { get; private set; }
+    [Required(ErrorMessage = "Name is mandatory")]
+    [MinLength(1, ErrorMessage = "Name should not be empty")]
     public string Name { get; set; } = string.Empty;
-    public int Quantity { get; set; }   //this property should be filtered out from requests
-    public DateTime Created { get; set; } 
-    public DateTime Updated { get; set; }  
+    [Range(0, int.MaxValue, ErrorMessage = "Quantity should be 0 or positive")]
+    public int Quantity { get; set; }
+    public DateTime Created { get; set; }
+    public DateTime Updated { get; set; }
 
     public static ProductDTO FromEntity(Product product)
     {
         return new ProductDTO
         {
-            Id = product.Id, 
+            Id = product.Id,
             Name = product.Name,
             Quantity = product.Quantity,
             Created = product.Created,
@@ -27,7 +30,7 @@ public class ProductDTO
     {
         return new Product
         {
-            Id = Id, 
+            Id = Id,
             Name = Name,
             Quantity = Quantity,
             Created = Created,
