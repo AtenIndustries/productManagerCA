@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq; 
-using ProductManager.DAL.Models;
+using Microsoft.EntityFrameworkCore; 
 
 namespace ProductManager.BAL.Tests.Interceptors;
 // This interceptor makes sure that ConcurrencyTokens are properly filled

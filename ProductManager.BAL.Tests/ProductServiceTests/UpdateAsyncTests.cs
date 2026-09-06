@@ -3,8 +3,7 @@ using ProductManager.DAL;
 using ProductManager.BAL.Services;
 using ProductManager.BAL.Exceptions;
 using ProductManager.BAL.DTO;
-using ProductManager.DAL.Models;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using ProductManager.DAL.Models; 
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 

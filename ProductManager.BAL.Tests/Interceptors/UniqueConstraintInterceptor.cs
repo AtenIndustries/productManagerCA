@@ -1,15 +1,10 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using ProductManager.DAL.Models;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ProductManager.BAL.Exceptions;
-using System.Reflection;
 
 
 namespace ProductManager.BAL.Tests.Interceptors;
- 
+
 public class UniqueConstraintInterceptor<T>(string fieldName) : SaveChangesInterceptor where T : class
 {
     private string FieldName { get; set; } = fieldName;
@@ -32,21 +27,22 @@ public class UniqueConstraintInterceptor<T>(string fieldName) : SaveChangesInter
             .ToList();
 
         foreach (var value in values)
-        { 
+        {
             //Get existing value in DB
-            var existsInDB = context.Set<T>().Any(p => EF.Property<object>(p,FieldName).Equals(value));
+            var existsInDB = context.Set<T>().Any(p => EF.Property<object>(p, FieldName).Equals(value));
             //Gets existing from current update or create operation
 #pragma warning disable CS8602 // Nulls already filtered above
             var existsOnSameBatch = values.Count(v => v.Equals(value)) > 1;
 #pragma warning restore CS8602 //  Nulls already filtered above
 
-            if (existsOnSameBatch || existsInDB){
+            if (existsOnSameBatch || existsInDB)
+            {
                 throw new DuplicateProductException();
             }
 
         }
 
         return base.SavingChangesAsync(eventData, result, ct);
-    } 
+    }
 }
 

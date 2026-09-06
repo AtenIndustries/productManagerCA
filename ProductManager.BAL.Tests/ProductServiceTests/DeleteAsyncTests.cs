@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductManager.DAL;
-using ProductManager.BAL.Services;
-using ProductManager.BAL.DTO;
-using ProductManager.DAL.Models;
+using ProductManager.BAL.Services; 
 using ProductManager.BAL.Tests.Interceptors;
 using ProductManager.BAL.Exceptions;
 
