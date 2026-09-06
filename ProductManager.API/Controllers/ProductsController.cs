@@ -88,7 +88,7 @@ public class ProductsController(IProductService productService) : Controller
 
     [HttpGet("search")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Search([FromQuery] string? name, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Search([FromQuery] string? name, CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(name, null, null, ct);
         return Ok(products);
@@ -96,7 +96,7 @@ public class ProductsController(IProductService productService) : Controller
 
     [HttpGet("stock-level")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)] 
-    public async Task<IActionResult> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
         return Ok(products);
