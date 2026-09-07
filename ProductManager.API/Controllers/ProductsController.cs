@@ -96,7 +96,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="stockUpdateQuery"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpPost("{id}/increment-stock/{quantity}")]
+    [HttpPost("{id}/increment-stock/{delta}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -112,7 +112,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="stockUpdateQuery"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpPost("{id}/decrement-stock/{quantity}")]
+    [HttpPost("{id}/decrement-stock/{delta}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

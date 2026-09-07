@@ -222,7 +222,7 @@ public class ProductsSearchTests
             .Setup(s => s.AdjustStockAsync(id, 1, CancellationToken.None))
             .ReturnsAsync(incrementedPrd);
 
-        var result = await _controller.IncrementStock(new StockUpdateQuery { Id = id, Quantity = 1 }, CancellationToken.None);
+        var result = await _controller.IncrementStock(new StockUpdateQuery { Id = id, Delta = 1 }, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(incrementedPrd, okResult.Value);
     }
@@ -237,7 +237,7 @@ public class ProductsSearchTests
             .Setup(s => s.AdjustStockAsync(id, -1, CancellationToken.None))
             .ReturnsAsync(decrementedPrd);
 
-        var result = await _controller.DecrementStock(new StockUpdateQuery { Id = id, Quantity = 1 }, CancellationToken.None);
+        var result = await _controller.DecrementStock(new StockUpdateQuery { Id = id, Delta = 1 }, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(decrementedPrd, okResult.Value);
     }
