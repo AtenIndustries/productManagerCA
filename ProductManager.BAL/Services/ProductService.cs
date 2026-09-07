@@ -50,22 +50,22 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entity.Id;
     }
 
-    public async Task<ProductDTO> UpdateAsync(int id, ProductDTO productDTO, CancellationToken ct = default)
+    public async Task<ProductDTO> UpdateAsync(int id, UpdateProductDTO updateData, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
-        ?? throw new ProductNotFoundException(productDTO.Id);
+        ?? throw new ProductNotFoundException(id);
 
         //Note: The in memory database does not care about Unique constrainsts.
         //      Just a piece of code to pass some unit tests.
         bool duplicateExists = await _ctx.Products
-            .AnyAsync(p => p.Name == productDTO.Name && p.Id != id, ct);
+            .AnyAsync(p => p.Name == updateData.Name && p.Id != id, ct);
         if (duplicateExists)
         {
-            throw new DuplicateProductException(productDTO);
+            throw new DuplicateProductException(updateData);
         }
 
-        entity.Name = productDTO.Name;
-        entity.Quantity = Math.Max(productDTO.Quantity, 0);//Prevent negative values
+        _ctx.Entry(entity).CurrentValues.SetValues(updateData); 
+        entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values
         entity.Updated = DateTime.Now;
 
         try
@@ -74,15 +74,15 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(productDTO.Id, ex);
+            throw new ProductConcurrencyException(id, ex);
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new DuplicateProductException(productDTO, ex);
+            throw new DuplicateProductException(updateData, ex);
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(productDTO.Id, ex);
+            throw new ProductPersistenceException(id, ex);
         }
         return ProductDTO.FromEntity(entity);
     }

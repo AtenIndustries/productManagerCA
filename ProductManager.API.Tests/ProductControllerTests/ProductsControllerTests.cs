@@ -189,13 +189,14 @@ public class ProductsSearchTests
     public async Task Update_ReturnsOk_WhenProductIsUpdated()
     {
         int id = 1;
+        UpdateProductDTO updData = new() { Name = "PRD", Quantity = 3 };
         ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
-            .Setup(s => s.UpdateAsync(id, prd, CancellationToken.None))
+            .Setup(s => s.UpdateAsync(id, updData, CancellationToken.None))
             .ReturnsAsync(prd);
 
-        var result = await _controller.Update(id, prd, CancellationToken.None);
+        var result = await _controller.Update(id, updData, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(prd, okResult.Value);
     }

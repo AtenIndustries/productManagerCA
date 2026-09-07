@@ -69,7 +69,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ProductDTO>> Update(int id, ProductDTO product, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Update(int id, UpdateProductDTO product, CancellationToken ct)
     {
         ProductDTO updPrd = await _productService.UpdateAsync(id, product, ct);
         return Ok(updPrd);

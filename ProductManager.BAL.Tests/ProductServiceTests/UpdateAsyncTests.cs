@@ -10,16 +10,17 @@ namespace ProductManager.BAL.Tests.ProductServiceTests;
 public class UpdateAsyncTests
 { 
     [Theory]
-    [InlineData(2, "PRD2-Upgraded", 4)]
-    [InlineData(3, "PRD3-Downgraded", 2)]
-    [InlineData(1, "PRD1-New Release", 5)]
-    public async Task UpdateAsync_ValidParams_UpdatesProductSuccessfully(int updId, string newName, int newQuantity)
+    [InlineData(2, "PRD2-Upgraded", "PRD2-Upgraded is an upgraded version of PRD2", 4)]
+    [InlineData(3, "PRD3-Downgraded", "PRD3-Downgraded is a lightweight version of PRD3", 2)]
+    [InlineData(1, "PRD1-New Release", null, 5)]
+    public async Task UpdateAsync_ValidParams_UpdatesProductSuccessfully(int updId, string newName, string? newDescription, int newQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductDTO updPrd = new()
+        UpdateProductDTO updPrd = new()
         {
             Name = newName,
-            Quantity = newQuantity
+            Quantity = newQuantity,
+            Description = newDescription            
         };
 
         ProductService service = new(ctx);
@@ -47,8 +48,12 @@ public class UpdateAsyncTests
         Assert.NotNull(entity);
         ctx.ChangeTracker.Clear();
 
-        ProductDTO updPrd = ProductDTO.FromEntity(entity);
-        updPrd.Quantity = newQuantity;
+        UpdateProductDTO updPrd = new UpdateProductDTO
+        {
+            Quantity = newQuantity,
+            Name = entity.Name,
+            Description = entity.Description
+        };
 
         ProductService service = new(ctx);
         Exception? exception = await Record.ExceptionAsync(async () => await service.UpdateAsync(updId, updPrd, CancellationToken.None));
@@ -66,7 +71,7 @@ public class UpdateAsyncTests
         ctx.ChangeTracker.Clear();
 
         ProductService service = new(ctx);
-        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new ProductDTO(), CancellationToken.None));
+        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new UpdateProductDTO(), CancellationToken.None));
     }
 
     [Theory]
@@ -78,7 +83,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductDTO updPrd = new ProductDTO
+        UpdateProductDTO updPrd = new()
         {
             Name = updName,
             Quantity = updQuantity
@@ -98,7 +103,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductDTO updPrd = new ProductDTO
+        UpdateProductDTO updPrd = new UpdateProductDTO
         {
             Name = "PRD1",
             Quantity = -3
@@ -128,7 +133,7 @@ public class UpdateAsyncTests
         var entity = await ctx.Products.FirstAsync(p => p.Id == 1);
         ctx.Entry(entity).OriginalValues[nameof(Product.ConcurrencyToken)] = new byte[] { 2, 2, 2, 2 };
 
-        ProductDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
+        UpdateProductDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
 
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.UpdateAsync(1, updateDto, CancellationToken.None));
     }
