@@ -52,9 +52,9 @@ public class ProductsSearchTests
     public async Task GetAll_ReturnsOkAndProducts_WhenProductsExist()
     {
         IEnumerable<ProductDTO> products = [
-            new ProductDTO{ Id=1, Name="PRD1", Quantity=2},
-            new ProductDTO{ Id=2, Name="PRD2", Quantity=3},
-            new ProductDTO{ Id=3, Name="PRD3", Quantity=3},
+            new ProductDTO{   Name="PRD1", Quantity=2},
+            new ProductDTO{   Name="PRD2", Quantity=3},
+            new ProductDTO{  Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.GetAllAsync(CancellationToken.None))
@@ -85,9 +85,9 @@ public class ProductsSearchTests
     public async Task Search_ReturnsOk_WhenSearchHasResults()
     {
         IEnumerable<ProductDTO> products = [
-            new ProductDTO{ Id=1, Name="PRD1", Quantity=2},
-            new ProductDTO{ Id=2, Name="PRD2", Quantity=3},
-            new ProductDTO{ Id=3, Name="PRD3", Quantity=3},
+            new ProductDTO{   Name="PRD1", Quantity=2},
+            new ProductDTO{   Name="PRD2", Quantity=3},
+            new ProductDTO{   Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.SearchByAsync("PRD", null, null, CancellationToken.None))
@@ -117,9 +117,9 @@ public class ProductsSearchTests
     public async Task SearchByStockLevel_ReturnsOk_WhenSearchHasResults()
     {
         IEnumerable<ProductDTO> products = [
-            new ProductDTO{ Id=1, Name="PRD1", Quantity=2},
-            new ProductDTO{ Id=2, Name="PRD2", Quantity=3},
-            new ProductDTO{ Id=3, Name="PRD3", Quantity=3},
+            new ProductDTO{   Name="PRD1", Quantity=2},
+            new ProductDTO{  Name="PRD2", Quantity=3},
+            new ProductDTO{  Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.SearchByAsync(null, 1, 4, CancellationToken.None))
@@ -148,7 +148,7 @@ public class ProductsSearchTests
     public async Task Create_ReturnsCreated_WhenProductIsCreated()
     {
         int id = 1;
-        ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
+        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.CreateAsync(prd, CancellationToken.None))
@@ -168,7 +168,7 @@ public class ProductsSearchTests
     public async Task Update_ReturnsCreated_WhenProductIsCreated()
     {
         int id = 1;
-        ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
+        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.CreateAsync(prd, CancellationToken.None))
@@ -189,7 +189,7 @@ public class ProductsSearchTests
     public async Task Update_ReturnsOk_WhenProductIsUpdated()
     {
         int id = 1;
-        ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
+        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.UpdateAsync(id, prd, CancellationToken.None))
@@ -216,8 +216,8 @@ public class ProductsSearchTests
     public async Task IncrementStock_ReturnsOk_WhenStockIncrements()
     {
         int id = 1;
-        ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
-        ProductDTO incrementedPrd = new() { Id = id, Name = "PRD", Quantity = 4 };
+        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductDTO incrementedPrd = new() { Name = "PRD", Quantity = 4 };
         _serviceMock
             .Setup(s => s.AdjustStockAsync(id, 1, CancellationToken.None))
             .ReturnsAsync(incrementedPrd);
@@ -231,8 +231,8 @@ public class ProductsSearchTests
     public async Task DecrementStock_ReturnsOk_WhenStockIncrements()
     {
         int id = 1;
-        ProductDTO prd = new() { Id = id, Name = "PRD", Quantity = 3 };
-        ProductDTO decrementedPrd = new() { Id = id, Name = "PRD", Quantity = 2 };
+        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductDTO decrementedPrd = new() { Name = "PRD", Quantity = 2 };
         _serviceMock
             .Setup(s => s.AdjustStockAsync(id, -1, CancellationToken.None))
             .ReturnsAsync(decrementedPrd);

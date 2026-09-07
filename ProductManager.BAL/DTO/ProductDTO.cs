@@ -8,7 +8,7 @@ namespace ProductManager.BAL.DTO;
 
 public class ProductDTO
 { 
-    public int Id { get; init; }
+    public int Id { get; private set; }
     [Required(ErrorMessage = "Name is mandatory")]
     [MinLength(1, ErrorMessage = "Name should not be empty")]
     [MaxLength(200, ErrorMessage ="Name cannot exceed 200 characters")]

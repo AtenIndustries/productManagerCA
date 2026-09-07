@@ -39,6 +39,9 @@ public class AdjustStockAsyncTests
     public async Task AdjustStockAsync_ThrowsProductConcurrencyException_WhenDbUpdateConcurrencyExceptionOccurs()
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
+        //Adds a product sync just to pass the search
+        ctx.Products.Add(new Product(){Id=999, Name="PRD", ConcurrencyToken=[1,2,3,4]});
+        ctx.SaveChanges();
         ProductService service = new(ctx); 
         await Assert.ThrowsAsync<ProductConcurrencyException>(()=> service.AdjustStockAsync(999, 500, CancellationToken.None));
     }

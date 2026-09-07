@@ -31,7 +31,7 @@ public class CreateAsyncTests
         {
             string name = names[i];
             Exception? exception = await Record.ExceptionAsync(async () => await service.CreateAsync(
-            new ProductDTO { Id = i + 1, Name = name, Quantity = fixedQuantity },
+            new ProductDTO { Name = name, Quantity = fixedQuantity },
             CancellationToken.None));
             hadException = exception is not null;
         }
@@ -65,6 +65,6 @@ public class CreateAsyncTests
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
         ProductService service = new(ctx);
-        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO { Id = 1, Quantity = 2, Name = "PRD" }));
+        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO {  Quantity = 2, Name = "PRD" }));
     }
 }
