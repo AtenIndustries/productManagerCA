@@ -42,5 +42,35 @@ public class ProductInvalidFieldsTests(ApiWebApplicationFactory factory) : IClas
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    
+    [Theory]
+    [InlineData(-1,10)]
+    [InlineData(1,-5)]
+    [InlineData(-6,-2)]
+    public async Task IncrementStock_InvalidRouteValues_ResultsInBadRequest(int id, int delta)
+    { 
+        var response = await _client.PostAsJsonAsync($"api/products/{id}/increment-stock/{delta}", new{});
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+ 
+    [Theory]
+    [InlineData(-1,10)]
+    [InlineData(1,-5)]
+    [InlineData(-6,-2)]
+    public async Task DecrementStock_InvalidRouteValues_ResultsInBadRequest(int id, int delta)
+    { 
+        var response = await _client.PostAsJsonAsync($"api/products/{id}/decrement-stock/{delta}", new{});
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData(-1,10)]
+    [InlineData(1,-5)]
+    [InlineData(6,2)]
+    public async Task StockLevel_InvalidRouteValues_ResultsInBadRequest(int min, int max)
+    {  
+        var response = await _client.GetAsync($"api/products/stock-level?min={min}&max={max}");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 
 }
