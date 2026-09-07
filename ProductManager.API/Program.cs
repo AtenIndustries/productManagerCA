@@ -30,7 +30,7 @@ builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>(option
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL")));
 
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
-builder.Services.AddExceptionHandler<ProductManager.API.ExceptionHandling.ProductExceptionHandler>();
+builder.Services.AddExceptionHandler<ProductManager.API.Middleware.ProductExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();

@@ -2,15 +2,12 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.BAL.Exceptions;
 
-namespace ProductManager.API.ExceptionHandling;
+namespace ProductManager.API.Middleware;
 
-public class ProductExceptionHandler : IExceptionHandler
+public class ProductExceptionHandler(ILogger<ProductExceptionHandler> logger) : IExceptionHandler
 {
-    private readonly ILogger<ProductExceptionHandler> _logger;
-    public ProductExceptionHandler(ILogger<ProductExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<ProductExceptionHandler> _logger = logger;
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken ct)
     {
         // Deals with client cancelation
