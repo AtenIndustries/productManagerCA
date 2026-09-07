@@ -37,6 +37,18 @@ public class StockManagementSteps
         _response = await _client.PostAsync($"/api/products/{_productId}/decrement-stock/{delta}", null);
     }
 
+    [When(@"decrementing ""(.*)"" units of product with id ""(.*)""")]
+    public async Task WhenDecrementingStockOfProductID(string delta, string productId)
+    {
+        _response = await _client.PostAsync($"/api/products/{productId}/decrement-stock/{delta}", null);
+    }
+
+    [When(@"incrementing ""(.*)"" units of product with id ""(.*)""")]
+    public async Task WhenIncrementingStockOfProductID(string delta, string productId)
+    {
+        _response = await _client.PostAsync($"/api/products/{productId}/increment-stock/{delta}", null);
+    }
+
     [When(@"increments ""(.*)"" units of that product")]
     public async Task WhenIncrementsStock(string delta)
     {
@@ -51,8 +63,8 @@ public class StockManagementSteps
 
     [Then(@"product stock becomes ""(.*)""")]
     public async Task ThenTheStockIs(string expectedStock)
-    { 
-        var product = await _response!.Content.ReadFromJsonAsync<ProductDTO>(); 
-        Assert.Equal(int.Parse(expectedStock), product!.Quantity);   
+    {
+        var product = await _response!.Content.ReadFromJsonAsync<ProductDTO>();
+        Assert.Equal(int.Parse(expectedStock), product!.Quantity);
     }
 }
