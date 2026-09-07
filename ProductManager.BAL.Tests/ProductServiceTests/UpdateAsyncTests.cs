@@ -16,7 +16,7 @@ public class UpdateAsyncTests
     public async Task UpdateAsync_ValidParams_UpdatesProductSuccessfully(int updId, string newName, string? newDescription, int newQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        UpdateProductDTO updPrd = new()
+        ProductDataDTO updPrd = new()
         {
             Name = newName,
             Quantity = newQuantity,
@@ -48,7 +48,7 @@ public class UpdateAsyncTests
         Assert.NotNull(entity);
         ctx.ChangeTracker.Clear();
 
-        UpdateProductDTO updPrd = new UpdateProductDTO
+        ProductDataDTO updPrd = new ProductDataDTO
         {
             Quantity = newQuantity,
             Name = entity.Name,
@@ -71,7 +71,7 @@ public class UpdateAsyncTests
         ctx.ChangeTracker.Clear();
 
         ProductService service = new(ctx);
-        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new UpdateProductDTO(), CancellationToken.None));
+        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new ProductDataDTO(), CancellationToken.None));
     }
 
     [Theory]
@@ -83,7 +83,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        UpdateProductDTO updPrd = new()
+        ProductDataDTO updPrd = new()
         {
             Name = updName,
             Quantity = updQuantity
@@ -103,7 +103,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        UpdateProductDTO updPrd = new UpdateProductDTO
+        ProductDataDTO updPrd = new ProductDataDTO
         {
             Name = "PRD1",
             Quantity = -3
@@ -133,7 +133,7 @@ public class UpdateAsyncTests
         var entity = await ctx.Products.FirstAsync(p => p.Id == 1);
         ctx.Entry(entity).OriginalValues[nameof(Product.ConcurrencyToken)] = new byte[] { 2, 2, 2, 2 };
 
-        UpdateProductDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
+        ProductDataDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
 
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.UpdateAsync(1, updateDto, CancellationToken.None));
     }

@@ -189,7 +189,7 @@ public class ProductsSearchTests
     public async Task Update_ReturnsOk_WhenProductIsUpdated()
     {
         int id = 1;
-        UpdateProductDTO updData = new() { Name = "PRD", Quantity = 3 };
+        ProductDataDTO updData = new() { Name = "PRD", Quantity = 3 };
         ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock

@@ -50,7 +50,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entity.Id;
     }
 
-    public async Task<ProductDTO> UpdateAsync(int id, UpdateProductDTO updateData, CancellationToken ct = default)
+    public async Task<ProductDTO> UpdateAsync(int id, ProductDataDTO updateData, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(id);

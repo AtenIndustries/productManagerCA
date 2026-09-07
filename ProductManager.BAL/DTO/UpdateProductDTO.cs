@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ProductManager.BAL.DTO;
 
-public class UpdateProductDTO
+public class ProductDataDTO
 {
     [Required(ErrorMessage = "Name is mandatory")]
     [MinLength(1, ErrorMessage = "Name should not be empty")]
