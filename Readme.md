@@ -3,7 +3,7 @@
 //On the root
 
 //Create migration
-dotnet ef migrations add FixNameColumn --project ProductManager.DAL --startup-project ProductManager.API
+dotnet ef migrations add AddProductIdRedundancy --project ProductManager.DAL --startup-project ProductManager.API
 
 //Commit migration
 dotnet ef  database update --project ProductManager.DAL --startup-project ProductManager.API

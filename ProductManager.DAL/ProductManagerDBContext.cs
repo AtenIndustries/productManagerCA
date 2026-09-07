@@ -16,6 +16,7 @@ public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> o
             .IsCyclic(false);
 
         modelBuilder.Entity<Product>()
+            .ToTable(tb => tb.IsTemporal()) //creates history
             .Property(p => p.Id)
             .HasDefaultValueSql("NEXT VALUE FOR dbo.ProductIds", "DF_Products_Id"); //Adds a default constaint name to avoid migration problems on drop
     }

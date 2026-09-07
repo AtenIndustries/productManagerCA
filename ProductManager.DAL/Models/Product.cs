@@ -8,16 +8,16 @@ namespace ProductManager.DAL.Models;
 public class Product
 {
     [Key]
-    public int Id { get; set; } 
-    [Column(TypeName="varchar(200)")]
+    public int Id { get; set; }
+    [Column(TypeName = "varchar(200)")]
     public required string Name { get; set; }
-    public int Quantity { get; set; }
-    [Column("created")]
-    public DateTime Created { get; set; }
-    [Column("updated")]
+    [Column(TypeName = "nvarchar(500)")]
+    public string? Description { get; set; }
+    public int Quantity { get; set; } 
+    public DateTime Created { get; set; } 
     public DateTime Updated { get; set; }
 
     [Timestamp]
-    public byte[] ConcurrencyToken {get; set;} 
+    public byte[] ConcurrencyToken { get; set; }=[];
 }
 
