@@ -5,8 +5,15 @@ namespace ProductManager.API.Contracts;
 
 public class StockUpdateQuery
 {
-    [Range(0, int.MaxValue, ErrorMessage = "number cannot be negative")]
+    /// <summary>
+    /// Product id
+    /// </summary>
+    [Range(0, int.MaxValue, ErrorMessage = "Negative id value")]
     public int Id {get;set;}
-    [Range(0, int.MaxValue, ErrorMessage = "quantity cannot be negative")]
+
+    /// <summary>
+    /// Delta
+    /// </summary>
+    [Range(0, int.MaxValue, ErrorMessage = "Negative delta value")]
     public int Quantity {get;set;}
 }

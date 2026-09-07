@@ -17,7 +17,7 @@ public class ProductDTO
     public int Quantity { get; set; }
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
-    public byte[] ConcurrencyToken {get;init;} = [];
+    public byte[] ConcurrencyToken {get;private set;} = [];
 
     public static ProductDTO FromEntity(Product product)
     {

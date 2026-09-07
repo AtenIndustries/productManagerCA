@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -31,7 +32,16 @@ builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>(option
 
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 builder.Services.AddExceptionHandler<ProductManager.API.Middleware.ProductExceptionHandler>();
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetails(); //For detailed problem response in middle ware
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);   
+    if (File.Exists(xmlPath))
+        c.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 
@@ -42,6 +52,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+
+app.UseSwaggerUI(s=>{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductManager.API v1");
+    s.RoutePrefix = string.Empty;
+});
 
 app.UseAuthorization();
 
