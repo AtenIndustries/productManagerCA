@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProductManager.CommonLib.Interceptors;
 
-public class UniqueConstraintInterceptor<TEntity,VException>(string fieldIdName, string uniqueFieldName) : SaveChangesInterceptor 
+public class UniqueConstraintInterceptor<TEntity, VException>(string fieldIdName, string uniqueFieldName) : SaveChangesInterceptor
 where TEntity : class
-where VException: Exception, new()
+where VException : Exception, new()
 
 {
     private readonly string _fieldIdName = fieldIdName;
@@ -32,12 +32,12 @@ where VException: Exception, new()
         foreach (var value in values)
         {
             //Get existing value in DB
-            var existsInDB = context.Set<TEntity>().Any(p => 
+            var existsInDB = context.Set<TEntity>().Any(p =>
                     EF.Property<object>(p, _uniqueFieldName).Equals(value.Item1)
                     && !EF.Property<object>(p, _fieldIdName).Equals(value.Item2) //Ignores the ones with same id
                     );
             //Gets existing from current update or create operation 
-            var existsOnSameBatch = values.Count(v => v.Equals(value)) > 1; 
+            var existsOnSameBatch = values.Count(v => v.Equals(value)) > 1;
 
             if (existsOnSameBatch || existsInDB)
             {
@@ -48,4 +48,4 @@ where VException: Exception, new()
 
         return base.SavingChangesAsync(eventData, result, ct);
     }
-} 
+}
