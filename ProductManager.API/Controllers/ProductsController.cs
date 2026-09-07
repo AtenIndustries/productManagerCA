@@ -102,7 +102,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> IncrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, stockUpdateQuery.Quantity, ct));
+        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, stockUpdateQuery.Delta, ct));
     }
 
 
@@ -118,7 +118,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> DecrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
-        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, -1 * stockUpdateQuery.Quantity, ct));
+        return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, -1 * stockUpdateQuery.Delta, ct));
     }
 
 

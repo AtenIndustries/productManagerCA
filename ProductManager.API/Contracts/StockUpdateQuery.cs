@@ -15,5 +15,5 @@ public class StockUpdateQuery
     /// Delta
     /// </summary>
     [Range(0, int.MaxValue, ErrorMessage = "Negative delta value")]
-    public int Quantity {get;set;}
+    public int Delta {get;set;}
 }
