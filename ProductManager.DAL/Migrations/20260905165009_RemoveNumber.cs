@@ -54,7 +54,15 @@ namespace ProductManager.DAL.Migrations
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
-
+            
+            //To avoid index duplication errors due to default value being 0
+            migrationBuilder.Sql(@"
+                WITH CTE AS (
+                    SELECT Number, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) as RowNum
+                    FROM dbo.Products
+                )
+                UPDATE CTE SET Number = RowNum;
+            ");
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Number",
                 table: "Products",
