@@ -6,16 +6,16 @@ using ProductManager.BAL.DTO;
 using Reqnroll;
 using Xunit;
 
-namespace ProductManager.API.Tests.Steps;
+namespace ProductManager.API.Tests.BddTestsSamples.Steps;
 
 [Binding]
-public class StockManagementSteps
+public class ProductManagementSteps
 {
     private readonly HttpClient _client;
     private HttpResponseMessage? _response;
     private int _productId;
 
-    public StockManagementSteps(ApiWebApplicationFactory factory)
+    public ProductManagementSteps(ApiWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -30,6 +30,15 @@ public class StockManagementSteps
         var json = await response.Content.ReadFromJsonAsync<JsonElement>();
         _productId = json.GetProperty("id").GetInt32();
     }
+
+    [When(@"adding a product with name ""(.*)"" and quantity ""(.*)""")]
+    public async Task WhenAddingAProductWithQuantity(string name, string quantity)
+    {
+        //Creates the product
+        var payload = new { Name = name, Quantity = int.Parse(quantity) };
+        _response = await _client.PostAsJsonAsync("/api/products", payload);
+    }
+
 
     [When(@"decrements ""(.*)"" units of that product")]
     public async Task WhenDecrementsStock(string delta)
@@ -66,5 +75,18 @@ public class StockManagementSteps
     {
         var product = await _response!.Content.ReadFromJsonAsync<ProductDTO>();
         Assert.Equal(int.Parse(expectedStock), product!.Quantity);
+    }
+
+    [When(@"searching for a min quantity of ""(.*)"" and max quantity of ""(.*)""")]
+    public async Task WhenSearchingForStockLevels(string min, string max)
+    {
+        _response = await _client.GetAsync($"api/products/stock-level?min={min}&max={max}");
+    }
+ 
+    [Then(@"has ""(.*)"" results")]
+    public async Task TheAmountOfResultsIs(string expectedResults)
+    {
+        var product = await _response!.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>();
+        Assert.Equal(int.Parse(expectedResults), product==null?0:product.Count());
     }
 }

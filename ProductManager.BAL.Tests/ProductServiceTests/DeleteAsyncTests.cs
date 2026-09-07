@@ -1,7 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using ProductManager.DAL;
-using ProductManager.BAL.Services;
-using ProductManager.BAL.Tests.Interceptors;
+using Microsoft.EntityFrameworkCore; 
+using ProductManager.BAL.Services; 
 using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;

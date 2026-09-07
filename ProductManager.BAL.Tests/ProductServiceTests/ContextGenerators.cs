@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProductManager.DAL;
 using ProductManager.DAL.Models;
-using ProductManager.BAL.Tests.Interceptors;
+using ProductManager.CommonLib.Interceptors;
+using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
@@ -27,7 +28,7 @@ public static class ContextGenerators
         var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .AddInterceptors(new ConcurrencyTokenInterceptor(nameof(Product.ConcurrencyToken)))
-            .AddInterceptors(new UniqueConstraintInterceptor<Product>(nameof(Product.Name)))
+            .AddInterceptors(new UniqueConstraintInterceptor<Product, DuplicateProductException>(nameof(Product.Id),nameof(Product.Name)))
             .Options;
         return new ProductManagerDBContext(options);
     }

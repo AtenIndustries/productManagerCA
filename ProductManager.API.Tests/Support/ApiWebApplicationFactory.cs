@@ -1,11 +1,11 @@
-using Io.Cucumber.Messages.Types;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using ProductManager.API.Tests.Interceptors;
+using ProductManager.BAL.Exceptions;
+using ProductManager.CommonLib.Interceptors;
 using ProductManager.DAL;
 
 namespace ProductManager.API.Tests.Support;
@@ -18,16 +18,14 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
-        {
-            /*var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<ProductManagerDBContext>));
-            if (descriptor != null) services.Remove(descriptor);*/
-            //To avoid conflicts with EFCore In memory db 
+        { 
             services.RemoveAll<DbContextOptions<ProductManagerDBContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<ProductManagerDBContext>>();
 
             services.AddDbContext<ProductManagerDBContext>(options =>
-                options.UseInMemoryDatabase(_dbName).AddInterceptors(new ConcurrencyTokenInterceptor(nameof(DAL.Models.Product.ConcurrencyToken))));
+                options.UseInMemoryDatabase(_dbName)
+                .AddInterceptors(new ConcurrencyTokenInterceptor(nameof(DAL.Models.Product.ConcurrencyToken)))
+                .AddInterceptors(new UniqueConstraintInterceptor<DAL.Models.Product, DuplicateProductException>(nameof(DAL.Models.Product.Id),nameof(DAL.Models.Product.Name))));
         });
     }
 }

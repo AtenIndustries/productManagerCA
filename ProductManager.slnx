@@ -4,4 +4,5 @@
   <Project Path="ProductManager.BAL/ProductManager.BAL.csproj" />
   <Project Path="ProductManager.API.Tests/ProductManager.API.Tests.csproj" />
   <Project Path="ProductManager.API/ProductManager.API.csproj" />
+  <Project Path="ProductManager.CommonLib/ProductManager.CommonLib.csproj" />
 </Solution>

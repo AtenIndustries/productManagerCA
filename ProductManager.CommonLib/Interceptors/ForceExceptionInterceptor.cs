@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
-
-namespace ProductManager.BAL.Tests.Interceptors;
+namespace ProductManager.CommonLib.Interceptors;
 // This interceptor makes sure that ConcurrencyTokens are properly filled
 public class ForceExceptionInterceptor<T>() : SaveChangesInterceptor
     where T : Exception, new()

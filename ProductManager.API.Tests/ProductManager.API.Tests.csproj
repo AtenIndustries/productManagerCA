@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProductManager.API\ProductManager.API.csproj" />
+    <ProjectReference Include="..\ProductManager.CommonLib\ProductManager.CommonLib.csproj" />
   </ItemGroup>
 
 </Project>

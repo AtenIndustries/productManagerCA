@@ -1,14 +1,5 @@
-using Moq;
-using Xunit;
-using Microsoft.AspNetCore.Mvc;
-using ProductManager.API.Controllers;
-using ProductManager.BAL.DTO;
-using ProductManager.BAL.Exceptions;
-using ProductManager.BAL.Services.Interfaces;
-using ProductManager.API.Contracts;
 using System.Net;
 using System.Net.Http.Json;
-using Xunit;
 using ProductManager.API.Tests.Support;
 
 
