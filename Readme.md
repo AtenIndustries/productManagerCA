@@ -1,7 +1,6 @@
 # ProductManager.API
 
-A demo REST API built under ASP.NET Core 10 to showcase a simple product management, with JWT authentication and distributed environment safe unique ID generation. 
-
+A demo REST API built under ASP.NET Core 10 to showcase a simple product management, with JWT authentication and distributed environment safe unique ID generation.
 
 ## Features
 
@@ -41,43 +40,49 @@ dotnet --version
 
 3. **Install SQL Server** (Optional step if you already have a database)
 
-    Get SQL Server image
-    Pull 
-    ```bash
-    docker pull mcr.microsoft.com/mssql/server:2022-latest
-    ```
+   Get SQL Server image
+   Pull
 
-    Create container
-    ```bash
-    docker run --platform linux/amd64  -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P@$$W0rd' -p 1433:1433 --name sqlserver -d mcr.microsoft.com/mssql/server:2022-latest
-    ```
+   ```bash
+   docker pull mcr.microsoft.com/mssql/server:2022-latest
+   ```
 
-    Check it's running:
-    ```bash
-    docker ps
-    ```
+   Create container
+
+   ```bash
+   docker run --platform -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P@$$W0rd' -p 1433:1433 --name sqlserver -d mcr.microsoft.com/mssql/server:2022-latest
+   ```
+
+   [!NOTE]
+   If you are using arm please add `--platform linux/amd64`
+
+   Check it's running:
+
+   ```bash
+   docker ps
+   ```
 
 4. **Create database**
 
-    [!NOTE]
-    You can skip this step and directly in your SQL Server Client UI create ProductManager database.
-    
-    Open an interactive shell into the container using `sqlcmd`:
+   [!NOTE]
+   You can skip this step and directly in your SQL Server Client UI create ProductManager database.
 
-    ```bash
-    docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P 'P@$$W0rd' -C
-    ```
+   Open an interactive shell into the container using `sqlcmd`:
 
-    Inside the `sqlcmd` prompt, create the database:
+   ```bash
+   docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd \
+   -S localhost -U sa -P 'P@$$W0rd' -C
+   ```
 
-    ```sql
-    CREATE DATABASE ProductManager;
-    GO
-    EXIT
-    ```
+   Inside the `sqlcmd` prompt, create the database:
 
-4. **Configure connection string**
+   ```sql
+   CREATE DATABASE ProductManager;
+   GO
+   EXIT
+   ```
+
+5. **Configure connection string**
 
    Update `appsettings.Development.json`
 
@@ -106,7 +111,7 @@ To confirm tables, enter again in the interactive shell and
     SELECT * FROM Products;
     go
     EXIT
-    ``` 
+    ```
 
 ## Running the API
 
@@ -116,10 +121,9 @@ dotnet run --project ProductManager.API
 
 By default the API listens on:
 
-- `https://localhost:7240` 
+- `https://localhost:7240`
 
 Swagger UI is available at the root URL. Ensure you register you own user and login before you try out the API on the Swagger UI. In case you are using another tool to test the API, make sure to add the `Authorization` header with value in the format `Bearer <TOKEN_JWT>` in any `POST`, `PUT`, `DELETE` route.
-
 
 ## Running Tests
 
@@ -137,15 +141,16 @@ dotnet test
 ### Run a specific test projects
 
 Run API tests (includes Behaviou Driven Development test samples)
+
 ```bash
 dotnet test ProductManager.API.Tests
 ```
 
 Run business layer tests
+
 ```bash
 dotnet test ProductManager.BAL.Tests
 ```
-
 
 ## Project Structure
 
@@ -154,7 +159,7 @@ ProductManager/
 ├── ProductManager.API/             # Web API project (controllers, Program.cs, config)
 ├── ProductManager.BAL/             # Business logic, DTOs
 ├── ProductManager.DAL/             # Data access layer: EF Core DbContext, migrations, seeding, entities
-├── ProductManager.API.Tests/       # Unit tests (integrated with authentication), BDD test samples, 
+├── ProductManager.API.Tests/       # Unit tests (integrated with authentication), BDD test samples,
 ├── ProductManager.BAL.Tests/       # Unit tests for the business layer
 ├── ProductManager.BAL.CommonLib/   # Interceptors, IAuditable
 └── README.md
