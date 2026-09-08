@@ -174,3 +174,4 @@ ProductManager/
 
 - **Interceptors in Tests**: the default memory database provided by EFCore does not support `Unique` constraints, `Sequence` and `ConcurrencyToken`. Other alternatives were explored, like in memory SQL Lite, but errors occurred when trying to create sequence. Instead, interceptors to replicate some of this behaviours were added. An interceptor to simulate some common errors was also added to test responses and error handling.
 
+- **No unit tests on Product ID generation**: No unit tests to ensure product `Id` is created with unique 6-digit IDs, because it is a database feature, not managed in the application-level.
