@@ -49,10 +49,16 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="product"></param>
     /// <param name="ct"></param>
     /// <returns>Created product</returns>  
+    /// <response code="200">Product created successfully.</response>
+    /// <response code="400">Invalid request data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="409">Product already exists.</response>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ProductDTO>> Create(ProductDTO product, CancellationToken ct)
     {
         int id = await _productService.CreateAsync(product, ct);
@@ -67,11 +73,18 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="product">Product data</param>
     /// <param name="ct"></param>
     /// <returns>Product updated</returns> 
+    /// <response code="200">Product updated successfully.</response>
+    /// <response code="400">Invalid request data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Product not found.</response>
+    /// <response code="409">Product already exists.</response>    
     [HttpPut("{id}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<ProductDTO>> Update(int id, ProductDataDTO product, CancellationToken ct)
     {
         ProductDTO updPrd = await _productService.UpdateAsync(id, product, ct);
@@ -83,10 +96,14 @@ public class ProductsController(IProductService productService) : Controller
     /// </summary>
     /// <param name="id"></param>
     /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <returns></returns> 
+    /// <response code="204">Product deleted with success</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Product not found.</response> 
     [HttpDelete("{id}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
@@ -99,11 +116,15 @@ public class ProductsController(IProductService productService) : Controller
     /// </summary>
     /// <param name="stockUpdateQuery"></param>
     /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <returns></returns> 
+    /// <response code="400">Invalid request data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Product not found.</response> 
     [HttpPost("{id}/increment-stock/{delta}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> IncrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
@@ -112,15 +133,19 @@ public class ProductsController(IProductService productService) : Controller
 
 
     /// <summary>
-    /// Decrements stock
+    /// Increments stock
     /// </summary>
     /// <param name="stockUpdateQuery"></param>
     /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <returns></returns> 
+    /// <response code="400">Invalid request data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Product not found.</response> 
     [HttpPost("{id}/decrement-stock/{delta}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDTO>> DecrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
@@ -148,8 +173,10 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="query"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
+    /// <response code="400">Invalid request data.</response>
     [HttpGet("stock-level")]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ProductDTO>> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
     {
         IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
