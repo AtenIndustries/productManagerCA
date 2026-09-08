@@ -53,34 +53,34 @@ dotnet --version
    docker run --platform -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P@$$W0rd' -p 1433:1433 --name sqlserver -d mcr.microsoft.com/mssql/server:2022-latest
    ```
 
-   [!NOTE]
-   If you are using arm please add `--platform linux/amd64`
+> [!NOTE]
+> If you are using arm please add `--platform linux/amd64`
 
-   Check it's running:
+Check it's running:
 
-   ```bash
-   docker ps
-   ```
+```bash
+docker ps
+```
 
 4. **Create database**
 
-   [!NOTE]
-   You can skip this step and directly in your SQL Server Client UI create ProductManager database.
+> [!NOTE]
+> You can skip this step and directly in your SQL Server Client UI create ProductManager database.
 
-   Open an interactive shell into the container using `sqlcmd`:
+Open an interactive shell into the container using `sqlcmd`:
 
-   ```bash
-   docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd \
-   -S localhost -U sa -P 'P@$$W0rd' -C
-   ```
+```bash
+docker exec -it sqlserver /opt/mssql-tools18/bin/sqlcmd \
+-S localhost -U sa -P 'P@$$W0rd' -C
+```
 
-   Inside the `sqlcmd` prompt, create the database:
+Inside the `sqlcmd` prompt, create the database:
 
-   ```sql
-   CREATE DATABASE ProductManager;
-   GO
-   EXIT
-   ```
+```sql
+CREATE DATABASE ProductManager;
+GO
+EXIT
+```
 
 5. **Configure connection string**
 
