@@ -31,7 +31,7 @@ namespace ProductManager.DAL.Migrations
 
             migrationBuilder.AddPrimaryKey("PK_Products", "Products", "Id");
 
-            
+
         }
 
         /// <inheritdoc />

@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore; 
-using ProductManager.BAL.Services; 
+using Microsoft.EntityFrameworkCore;
+using ProductManager.BAL.Services;
 using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;

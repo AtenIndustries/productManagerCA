@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi; 
+using Microsoft.OpenApi;
 using ProductManager.CommonLib.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ builder.Host.UseSerilog((context, config) =>
 {
     config
         .Enrich.FromLogContext()
-        .Enrich.WithMachineName()    
+        .Enrich.WithMachineName()
         .Enrich.WithEnvironmentName()
         .WriteTo.Console(outputTemplate:
             "[{Timestamp:HH:mm:ss} {Level:u3}] [{MachineName}] {Message:lj}{NewLine}{Exception}");
@@ -29,7 +29,7 @@ var connectionString =
         ?? throw new InvalidOperationException("Connection string"
         + "'defaultConnectionString' not found.");
 
-builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp,options) =>
+builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, options) =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL"))
     //Adds interceptor to fill audit fields for IAuditable entities
     .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
@@ -71,7 +71,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);   
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
         c.IncludeXmlComments(xmlPath);
 
@@ -103,12 +103,13 @@ app.UseHttpsRedirection();
 
 app.UseSwagger();
 
-app.UseSwaggerUI(s=>{
+app.UseSwaggerUI(s =>
+{
     s.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductManager.API v1");
     s.RoutePrefix = string.Empty;
 });
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

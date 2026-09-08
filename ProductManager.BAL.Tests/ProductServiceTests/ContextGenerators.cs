@@ -28,7 +28,7 @@ public static class ContextGenerators
         var options = new DbContextOptionsBuilder<ProductManagerDBContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .AddInterceptors(new ConcurrencyTokenInterceptor<Product>(nameof(Product.ConcurrencyToken)))
-            .AddInterceptors(new UniqueConstraintInterceptor<Product, DuplicateProductException>(nameof(Product.Id),nameof(Product.Name)))
+            .AddInterceptors(new UniqueConstraintInterceptor<Product, DuplicateProductException>(nameof(Product.Id), nameof(Product.Name)))
             .Options;
         return new ProductManagerDBContext(options);
     }

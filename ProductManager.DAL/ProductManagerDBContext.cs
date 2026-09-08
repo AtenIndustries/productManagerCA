@@ -24,9 +24,9 @@ public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> o
         modelBuilder.Entity<Product>().HasData(
             new Product() { Id = 100000, Name = "Dishwasher", Description = "Cheapest dishwasher ever", Quantity = 12, ConcurrencyToken = [1, 1, 1, 1], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
             new Product() { Id = 100001, Name = "Slingshot", Description = "Wooden slignshot", Quantity = 1, ConcurrencyToken = [2, 2, 2, 2], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
-            new Product() { Id = 100002, Name = "DreadPool Action Figure", Description = "Action figure", Quantity = 8, ConcurrencyToken = [3,3,3,3], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
-            new Product() { Id = 100004, Name = "Bag of fruits", Description = "Mix of fruits", Quantity = 25, ConcurrencyToken = [4,4,4,4], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
-            new Product() { Id = 100005, Name = "Bag of nuts", Description = "Mix of nuts", Quantity = 20, ConcurrencyToken = [5,5,5,5], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" }
+            new Product() { Id = 100002, Name = "DreadPool Action Figure", Description = "Action figure", Quantity = 8, ConcurrencyToken = [3, 3, 3, 3], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
+            new Product() { Id = 100004, Name = "Bag of fruits", Description = "Mix of fruits", Quantity = 25, ConcurrencyToken = [4, 4, 4, 4], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" },
+            new Product() { Id = 100005, Name = "Bag of nuts", Description = "Mix of nuts", Quantity = 20, ConcurrencyToken = [5, 5, 5, 5], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" }
         );
     }
 }

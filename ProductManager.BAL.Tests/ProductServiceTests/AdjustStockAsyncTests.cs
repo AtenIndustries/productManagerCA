@@ -24,15 +24,15 @@ public class AdjustStockAsyncTests
         ProductDTO adjPrd = await service.AdjustStockAsync(id, delta, CancellationToken.None);
         Assert.NotNull(prd);
         Assert.Equal(id, adjPrd.Id);
-        Assert.Equal(Math.Max(prd.Quantity+delta,0), adjPrd.Quantity);
+        Assert.Equal(Math.Max(prd.Quantity + delta, 0), adjPrd.Quantity);
     }
 
     [Fact]
     public async Task AdjustStockAsync_ThrowsProductNotFoundException_WhenUpdatingNonExisting()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx); 
-        await Assert.ThrowsAsync<ProductNotFoundException>(()=> service.AdjustStockAsync(999, 500, CancellationToken.None));
+        ProductService service = new(ctx);
+        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.AdjustStockAsync(999, 500, CancellationToken.None));
     }
 
     [Fact]
@@ -40,9 +40,9 @@ public class AdjustStockAsyncTests
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
         //Adds a product sync just to pass the search
-        ctx.Products.Add(new Product(){Id=999, Name="PRD", ConcurrencyToken=[1,2,3,4]});
+        ctx.Products.Add(new Product() { Id = 999, Name = "PRD", ConcurrencyToken = [1, 2, 3, 4] });
         ctx.SaveChanges();
-        ProductService service = new(ctx); 
-        await Assert.ThrowsAsync<ProductConcurrencyException>(()=> service.AdjustStockAsync(999, 500, CancellationToken.None));
+        ProductService service = new(ctx);
+        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.AdjustStockAsync(999, 500, CancellationToken.None));
     }
 }

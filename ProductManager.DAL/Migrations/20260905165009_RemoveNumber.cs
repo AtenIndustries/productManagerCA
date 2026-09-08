@@ -54,7 +54,7 @@ namespace ProductManager.DAL.Migrations
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
-            
+
             //To avoid index duplication errors due to default value being 0
             migrationBuilder.Sql(@"
                 WITH CTE AS (

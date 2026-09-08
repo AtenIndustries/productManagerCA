@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ProductManager.DAL;
 using ProductManager.BAL.DTO;
 using ProductManager.BAL.Services.Interfaces;
-using ProductManager.BAL.Services;
 using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
@@ -39,12 +38,12 @@ public class AuthController(ProductManagerDBContext context, IUserService userSe
         {
             return BadRequest("Incorrect Username or Password.");
         }
- 
+
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             return BadRequest("Incorrect Username or Password.");
         }
- 
+
         var token = GenerateJwtToken(user.Username);
         return Ok(new { Token = token });
     }

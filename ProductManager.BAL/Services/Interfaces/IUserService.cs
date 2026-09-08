@@ -9,5 +9,5 @@ public interface IUserService
 {
     Task<bool> HasUser(string username, CancellationToken ct = default);
     Task RegisterUser(RegisterUserDTO registerData, CancellationToken ct = default);
-    
+
 }

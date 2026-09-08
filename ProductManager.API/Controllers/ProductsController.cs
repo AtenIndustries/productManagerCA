@@ -1,11 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.API.Contracts;
 using ProductManager.BAL.DTO;
 using ProductManager.BAL.Services.Interfaces;
-using ProductManager.DAL;
-using ProductManager.DAL.Models;
 
 namespace ProductManager.API.Controllers;
 

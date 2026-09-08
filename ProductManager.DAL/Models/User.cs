@@ -10,12 +10,12 @@ public class User
 {
     [Key]
     public int Id { get; set; }
-    
-    [Required] 
+
+    [Required]
     [Column(TypeName = "varchar(100)")]
     public string Username { get; set; } = string.Empty;
-    
-    [Required] 
+
+    [Required]
     [Column(TypeName = "varchar(100)")]
     public string PasswordHash { get; set; } = string.Empty;
 }

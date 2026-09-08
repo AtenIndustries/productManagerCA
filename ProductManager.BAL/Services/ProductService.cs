@@ -63,7 +63,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
             throw new DuplicateProductException(updateData);
         }
 
-        _ctx.Entry(entity).CurrentValues.SetValues(updateData); 
+        _ctx.Entry(entity).CurrentValues.SetValues(updateData);
         entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values 
 
         try
@@ -129,7 +129,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         Product entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
             ?? throw new ProductNotFoundException(id);
 
-        entity.Quantity = Math.Max(entity.Quantity + delta, 0); 
+        entity.Quantity = Math.Max(entity.Quantity + delta, 0);
 
         try
         {

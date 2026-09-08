@@ -1,12 +1,5 @@
 using Moq;
-using Xunit;
-using Microsoft.AspNetCore.Mvc;
-using ProductManager.API.Controllers;
-using ProductManager.BAL.DTO;
 using ProductManager.BAL.Exceptions;
-using ProductManager.BAL.Services.Interfaces;
-using ProductManager.API.Contracts;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using ProductManager.API.Middleware;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +13,7 @@ public class ProductExceptionHandlerTests
 
     public ProductExceptionHandlerTests()
     {
-        _loggerMock=new Mock<ILogger<ProductExceptionHandler>>();
+        _loggerMock = new Mock<ILogger<ProductExceptionHandler>>();
         _productExceptionHandler = new(_loggerMock.Object);
     }
 
@@ -30,7 +23,7 @@ public class ProductExceptionHandlerTests
         ProductNotFoundException exception = new();
         HttpContext context = new DefaultHttpContext();
         await _productExceptionHandler.TryHandleAsync(context, exception, CancellationToken.None);
-        Assert.Equal(StatusCodes.Status404NotFound,context.Response.StatusCode);
+        Assert.Equal(StatusCodes.Status404NotFound, context.Response.StatusCode);
     }
 
     [Fact]
@@ -39,7 +32,7 @@ public class ProductExceptionHandlerTests
         ProductConcurrencyException exception = new();
         HttpContext context = new DefaultHttpContext();
         await _productExceptionHandler.TryHandleAsync(context, exception, CancellationToken.None);
-        Assert.Equal(StatusCodes.Status409Conflict,context.Response.StatusCode);
+        Assert.Equal(StatusCodes.Status409Conflict, context.Response.StatusCode);
     }
 
     [Fact]
@@ -48,7 +41,7 @@ public class ProductExceptionHandlerTests
         DuplicateProductException exception = new();
         HttpContext context = new DefaultHttpContext();
         await _productExceptionHandler.TryHandleAsync(context, exception, CancellationToken.None);
-        Assert.Equal(StatusCodes.Status409Conflict,context.Response.StatusCode);
+        Assert.Equal(StatusCodes.Status409Conflict, context.Response.StatusCode);
     }
 
     [Fact]
@@ -57,7 +50,7 @@ public class ProductExceptionHandlerTests
         Exception exception = new();
         HttpContext context = new DefaultHttpContext();
         await _productExceptionHandler.TryHandleAsync(context, exception, CancellationToken.None);
-        Assert.Equal(StatusCodes.Status500InternalServerError,context.Response.StatusCode);
+        Assert.Equal(StatusCodes.Status500InternalServerError, context.Response.StatusCode);
     }
 
 }

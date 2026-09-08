@@ -8,7 +8,7 @@ namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
 public class UpdateAsyncTests
-{ 
+{
     [Theory]
     [InlineData(2, "PRD2-Upgraded", "PRD2-Upgraded is an upgraded version of PRD2", 4)]
     [InlineData(3, "PRD3-Downgraded", "PRD3-Downgraded is a lightweight version of PRD3", 2)]
@@ -20,7 +20,7 @@ public class UpdateAsyncTests
         {
             Name = newName,
             Quantity = newQuantity,
-            Description = newDescription            
+            Description = newDescription
         };
 
         ProductService service = new(ctx);

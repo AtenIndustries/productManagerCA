@@ -1,7 +1,5 @@
-using System.Data;
 using Microsoft.EntityFrameworkCore;
-using ProductManager.BAL.DTO;
-using ProductManager.BAL.Exceptions;
+using ProductManager.BAL.DTO; 
 using ProductManager.BAL.Services.Interfaces;
 using ProductManager.DAL;
 using ProductManager.DAL.Models;
@@ -14,7 +12,7 @@ public class UserService(ProductManagerDBContext ctx) : IUserService
 
     public async Task<bool> HasUser(string username, CancellationToken ct = default)
     {
-        return await _ctx.Users.AnyAsync(u=>u.Username == username, ct);
+        return await _ctx.Users.AnyAsync(u => u.Username == username, ct);
     }
 
     public async Task RegisterUser(RegisterUserDTO registerData, CancellationToken ct = default)

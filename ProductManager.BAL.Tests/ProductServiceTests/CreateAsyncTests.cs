@@ -65,6 +65,6 @@ public class CreateAsyncTests
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
         ProductService service = new(ctx);
-        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO {  Quantity = 2, Name = "PRD" }));
+        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO { Quantity = 2, Name = "PRD" }));
     }
 }

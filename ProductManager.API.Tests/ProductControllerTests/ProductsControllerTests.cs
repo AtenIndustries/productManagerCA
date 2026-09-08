@@ -1,12 +1,9 @@
 using Moq;
-using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.API.Controllers;
 using ProductManager.BAL.DTO;
-using ProductManager.BAL.Exceptions;
 using ProductManager.BAL.Services.Interfaces;
 using ProductManager.API.Contracts;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ProductManager.API.Tests.ProductControllerTests;
 

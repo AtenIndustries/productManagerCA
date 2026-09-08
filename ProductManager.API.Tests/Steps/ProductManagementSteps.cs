@@ -1,12 +1,10 @@
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using ProductManager.API.Tests.Support;
 using ProductManager.BAL.DTO;
-using Reqnroll;
-using Xunit;
+using Reqnroll; 
 
 namespace ProductManager.API.Tests.BddTestsSamples.Steps;
 
@@ -44,7 +42,7 @@ public class ProductManagementSteps
 
     [Given(@"exists product with name ""(.*)"" and quantity ""(.*)""")]
     public async Task GivenAnExistingProductWithQuantity(string name, string quantity)
-    { 
+    {
         //Creates the product
         var payload = new { Name = name, Quantity = int.Parse(quantity) };
         var response = await _client.PostAsJsonAsync("/api/products", payload);
@@ -111,5 +109,5 @@ public class ProductManagementSteps
         var product = await _response!.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>();
         Assert.Equal(int.Parse(expectedResults), product == null ? 0 : product.Count());
     }
- 
+
 }
