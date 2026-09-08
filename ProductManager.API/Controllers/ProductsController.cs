@@ -59,7 +59,7 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ProductDTO>> Create(ProductDTO product, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Create(ProductDataDTO product, CancellationToken ct)
     {
         int id = await _productService.CreateAsync(product, ct);
         ProductDTO? created = await _productService.GetAsync(id, ct);

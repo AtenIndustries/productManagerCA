@@ -24,7 +24,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         return entities;
     }
 
-    public async Task<int> CreateAsync(ProductDTO productDTO, CancellationToken ct = default)
+    public async Task<int> CreateAsync(ProductDataDTO productDTO, CancellationToken ct = default)
     {
         Product entity = productDTO.ToEntity();
         entity.Quantity = Math.Max(entity.Quantity, 0);
@@ -36,7 +36,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(productDTO.Id, ex);
+            throw new ProductConcurrencyException(productDTO.Name, ex);
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
@@ -44,7 +44,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(productDTO.Id, ex);
+            throw new ProductPersistenceException(productDTO.Name, ex);
         }
 
         return entity.Id;

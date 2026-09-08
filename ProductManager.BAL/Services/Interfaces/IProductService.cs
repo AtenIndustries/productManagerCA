@@ -9,7 +9,7 @@ public interface IProductService
 {
     Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default);
     Task<ProductDTO?> GetAsync(int id, CancellationToken ct = default);
-    Task<int> CreateAsync(ProductDTO product, CancellationToken ct = default);
+    Task<int> CreateAsync(ProductDataDTO product, CancellationToken ct = default);
     Task<ProductDTO> UpdateAsync(int id, ProductDataDTO updateData, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
     Task<IEnumerable<ProductDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default);
