@@ -1,6 +1,9 @@
 using System.Reflection;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +21,7 @@ builder.Host.UseSerilog((context, config) =>
 
 
 
-builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -30,10 +33,37 @@ var connectionString =
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>(options =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL")));
 
+
+// Configuration of JWT
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
+builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IUserService, ProductManager.BAL.Services.UserService>();
 builder.Services.AddExceptionHandler<ProductManager.API.Middleware.ProductExceptionHandler>();
 builder.Services.AddProblemDetails(); //For detailed problem response in middle ware
 
+//Service to build an API UI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -60,6 +90,7 @@ app.UseSwaggerUI(s=>{
     s.RoutePrefix = string.Empty;
 });
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
