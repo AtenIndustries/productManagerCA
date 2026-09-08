@@ -1,6 +1,11 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace ProductManager.CommonLib.Interceptors;
-// This interceptor makes sure that ConcurrencyTokens are properly filled
+
+
+/// <summary>
+/// [Unit tests exclusive] Simulates an exception from Database
+/// </summary>
+/// <typeparam name="T">Exception type</typeparam>
 public class ForceExceptionInterceptor<T>() : SaveChangesInterceptor
     where T : Exception, new()
 {

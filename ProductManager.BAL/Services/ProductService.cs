@@ -28,7 +28,6 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
     {
         Product entity = productDTO.ToEntity();
         entity.Quantity = Math.Max(entity.Quantity, 0);
-        entity.Created = DateTime.UtcNow;
         _ctx.Add(entity);
         try
         {
@@ -65,8 +64,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         }
 
         _ctx.Entry(entity).CurrentValues.SetValues(updateData); 
-        entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values
-        entity.Updated = DateTime.Now;
+        entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values 
 
         try
         {
@@ -131,8 +129,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         Product entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
             ?? throw new ProductNotFoundException(id);
 
-        entity.Quantity = Math.Max(entity.Quantity + delta, 0);
-        entity.Updated = DateTime.UtcNow;
+        entity.Quantity = Math.Max(entity.Quantity + delta, 0); 
 
         try
         {

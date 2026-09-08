@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi; 
+using ProductManager.CommonLib.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 const string TokenSchemeId = "Bearer";
@@ -28,8 +29,10 @@ var connectionString =
         ?? throw new InvalidOperationException("Connection string"
         + "'defaultConnectionString' not found.");
 
-builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL")));
+builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp,options) =>
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL"))
+    //Adds interceptor to fill audit fields for IAuditable entities
+    .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
 
 // Configuration of JWT
@@ -58,6 +61,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IUserService, ProductManager.BAL.Services.UserService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuditInterceptor>();
 builder.Services.AddExceptionHandler<ProductManager.API.Middleware.ProductExceptionHandler>();
 builder.Services.AddProblemDetails(); //For detailed problem response in middle ware
 

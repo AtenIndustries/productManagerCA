@@ -3,6 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProductManager.CommonLib.Interceptors;
 
+/// <summary>
+/// [Unit tests exclusive] Simulates the behaviour of the Unique constraint
+/// </summary>
+/// <typeparam name="TEntity">Database entity</typeparam>
+/// <typeparam name="VException"></typeparam>
+/// <param name="fieldIdName">Meta name of the PK field</param>
+/// <param name="uniqueFieldName">Meta name of the field to check</param>
 public class UniqueConstraintInterceptor<TEntity, VException>(string fieldIdName, string uniqueFieldName) : SaveChangesInterceptor
 where TEntity : class
 where VException : Exception, new()

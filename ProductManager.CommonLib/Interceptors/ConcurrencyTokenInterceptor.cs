@@ -2,7 +2,11 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProductManager.CommonLib.Interceptors;
-// This interceptor makes sure that ConcurrencyTokens are properly filled
+/// <summary>
+/// [Unit tests exclusive] Makes sure that ConcurrencyTokens are properly filled
+/// </summary>
+/// <typeparam name="TEntity">Database entity</typeparam>
+/// <param name="fieldName">Meta name of the field to add concurrency token</param>
 public class ConcurrencyTokenInterceptor<TEntity>(string fieldName) : SaveChangesInterceptor
 where TEntity : class
 {
