@@ -11,7 +11,7 @@ public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> o
     {
         //Generates a sequence of ids for Product Id creation
         modelBuilder.HasSequence<int>("ProductIds", schema: "dbo")
-            .StartsAt(100000)
+            .StartsAt(100006) //Starts at 100006 to avoid collisions with the test data
             .IncrementsBy(1)
             .HasMax(999999)
             .IsCyclic(false);

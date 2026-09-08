@@ -23,7 +23,7 @@ namespace ProductManager.DAL.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.HasSequence<int>("ProductIds", "dbo")
-                .StartsAt(100000L)
+                .StartsAt(100006L)
                 .HasMax(999999L);
 
             modelBuilder.Entity("ProductManager.DAL.Models.Product", b =>

@@ -118,7 +118,7 @@ By default the API listens on:
 
 - `https://localhost:7240` 
 
-Swagger UI is available at the root URL.
+Swagger UI is available at the root URL. Ensure you register you own user and login before you try out the API on the Swagger UI. In case you are using another tool to test the API, make sure to add the `Authorization` header with value in the format `Bearer <TOKEN_JWT>` in any `POST`, `PUT`, `DELETE` route.
 
 
 ## Running Tests
