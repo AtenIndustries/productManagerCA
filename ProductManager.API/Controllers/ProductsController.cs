@@ -51,7 +51,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <returns>Created product</returns>  
     /// <response code="200">Product created successfully.</response>
     /// <response code="400">Invalid request data.</response>
-    /// <response code="401">Unauthorized.</response>
+    /// <response code="401">Unauthorized — valid JWT token required.</response>
     /// <response code="409">Product already exists.</response>
     [HttpPost]
     [Authorize]
@@ -75,7 +75,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <returns>Product updated</returns> 
     /// <response code="200">Product updated successfully.</response>
     /// <response code="400">Invalid request data.</response>
-    /// <response code="401">Unauthorized.</response>
+    /// <response code="401">Unauthorized — valid JWT token required.</response>
     /// <response code="404">Product not found.</response>
     /// <response code="409">Product already exists.</response>    
     [HttpPut("{id}")]
@@ -98,7 +98,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns> 
     /// <response code="204">Product deleted with success</response>
-    /// <response code="401">Unauthorized.</response>
+    /// <response code="401">Unauthorized — valid JWT token required.</response>
     /// <response code="404">Product not found.</response> 
     [HttpDelete("{id}")]
     [Authorize]
@@ -118,7 +118,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns> 
     /// <response code="400">Invalid request data.</response>
-    /// <response code="401">Unauthorized.</response>
+    /// <response code="401">Unauthorized — valid JWT token required.</response>
     /// <response code="404">Product not found.</response> 
     [HttpPost("{id}/increment-stock/{delta}")]
     [Authorize]
@@ -139,7 +139,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns> 
     /// <response code="400">Invalid request data.</response>
-    /// <response code="401">Unauthorized.</response>
+    /// <response code="401">Unauthorized — valid JWT token required.</response>
     /// <response code="404">Product not found.</response> 
     [HttpPost("{id}/decrement-stock/{delta}")]
     [Authorize]

@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi; 
 
 var builder = WebApplication.CreateBuilder(args);
+const string TokenSchemeId = "Bearer";
 
 // Console logs
 builder.Host.UseSerilog((context, config) =>
@@ -67,6 +69,21 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);   
     if (File.Exists(xmlPath))
         c.IncludeXmlComments(xmlPath);
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token below."
+    });
+
+    c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference(TokenSchemeId, document)] = []
+    });
 });
 
 var app = builder.Build();
