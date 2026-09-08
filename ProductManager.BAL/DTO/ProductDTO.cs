@@ -26,19 +26,4 @@ public class ProductDTO : ProductDataDTO
             ConcurrencyToken = product.ConcurrencyToken
         };
     }
-
-    public Product ToEntity()
-    {
-        return new Product
-        {
-            Id = Id,
-            Name = Name,
-            Description = Description,
-            Quantity = Quantity,
-            Created = Created,
-            Updated = Updated
-        };
-    }
-
-
 }

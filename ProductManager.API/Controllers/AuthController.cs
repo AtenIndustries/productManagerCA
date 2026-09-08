@@ -23,7 +23,7 @@ public class AuthController(ProductManagerDBContext context, IUserService userSe
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDTO request, CancellationToken ct)
     {
-        if (await userService.HasUser(request.Username, ct))
+        if (await _userService.HasUser(request.Username, ct))
         {
             return BadRequest("User already exists");
         }
