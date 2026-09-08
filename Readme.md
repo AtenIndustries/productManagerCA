@@ -126,7 +126,7 @@ Swagger UI is available at the root URL. Ensure you register you own user and lo
 ### Prerequisites for the test environment
 
 No live database credentials are required for the tests. `WebApplicationFactory` is used in ProductManager.API.Tests to mock some SQL Server behaviours not available in EFCore Memory Database, such as the creation of concurrency tokens, unique constraints and some common exceptions (ex: DBConcurrencyException), to showcase some error handling behaviours.
-There was an attempt to override the API authentication in the `WebApplicationFactory` with a mock authenticator without success, so for this Code Accessment, the tests on EndPoints with `Authorize` annotation, are integrated with the JWT API authentication. That authentication is handled inside those te
+There was an attempt to override the API authentication in the `WebApplicationFactory` with a mock authenticator without success, so for this Code Accessment, the tests on EndPoints with `Authorize` annotation, are integrated with the JWT API authentication. That authentication is handled inside the memory db.
 
 ### Run all tests
 
@@ -156,7 +156,7 @@ ProductManager/
 ├── ProductManager.DAL/             # Data access layer: EF Core DbContext, migrations, seeding, entities
 ├── ProductManager.API.Tests/       # Unit tests (integrated with authentication), BDD test samples, 
 ├── ProductManager.BAL.Tests/       # Unit tests for the business layer
-├── ProductManager.BAL.CommonLib/   # Interceptors
+├── ProductManager.BAL.CommonLib/   # Interceptors, IAuditable
 └── README.md
 ```
 
