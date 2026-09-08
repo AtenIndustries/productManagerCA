@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.API.Contracts;
 using ProductManager.BAL.DTO;
@@ -49,6 +50,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns>Created product</returns>  
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ProductDTO>> Create(ProductDTO product, CancellationToken ct)
@@ -66,6 +68,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns>Product updated</returns> 
     [HttpPut("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -82,6 +85,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
@@ -97,6 +101,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost("{id}/increment-stock/{delta}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -113,6 +118,7 @@ public class ProductsController(IProductService productService) : Controller
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost("{id}/decrement-stock/{delta}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

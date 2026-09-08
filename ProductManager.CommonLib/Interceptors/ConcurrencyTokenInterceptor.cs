@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProductManager.CommonLib.Interceptors;
 // This interceptor makes sure that ConcurrencyTokens are properly filled
-public class ConcurrencyTokenInterceptor(string fieldName) : SaveChangesInterceptor
+public class ConcurrencyTokenInterceptor<TEntity>(string fieldName) : SaveChangesInterceptor
+where TEntity : class
 {
     private string FieldName { get; set; } = fieldName;
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
@@ -13,7 +14,7 @@ public class ConcurrencyTokenInterceptor(string fieldName) : SaveChangesIntercep
         if (context == null) return base.SavingChangesAsync(eventData, result, ct);
 
         // Gets the modified entities
-        var entries = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
+        var entries = context.ChangeTracker.Entries<TEntity>().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
 
         foreach (var entry in entries)
         {

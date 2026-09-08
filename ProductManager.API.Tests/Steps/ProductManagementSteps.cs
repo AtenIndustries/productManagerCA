@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 using ProductManager.API.Tests.Support;
 using ProductManager.BAL.DTO;
 using Reqnroll;
@@ -20,9 +22,29 @@ public class ProductManagementSteps
         _client = factory.CreateClient();
     }
 
+    [Given(@"exists a registered user ""(.*)"" with password ""(.*)""")]
+    public async Task GivenRegisteredUser(string username, string password)
+    {
+        var registerResponse = await _client.PostAsJsonAsync("/api/auth/register",
+            new { Username = username, Password = password });
+        registerResponse.EnsureSuccessStatusCode();
+    }
+
+    [Given(@"user is logged in with username ""(.*)"" and password ""(.*)""")]
+    public async Task GivenLoggedInAs(string username, string password)
+    {
+        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { Username = username, Password = password });
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            var loginBody = await loginResponse.Content.ReadAsStringAsync();
+            var token = JObject.Parse(loginBody)["token"]?.ToString();
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+    }
+
     [Given(@"exists product with name ""(.*)"" and quantity ""(.*)""")]
     public async Task GivenAnExistingProductWithQuantity(string name, string quantity)
-    {
+    { 
         //Creates the product
         var payload = new { Name = name, Quantity = int.Parse(quantity) };
         var response = await _client.PostAsJsonAsync("/api/products", payload);
@@ -65,7 +87,7 @@ public class ProductManagementSteps
     }
 
     [Then(@"the answer is ""(.*)""")]
-    public void ThenTheAnswerIs(string expectedStatus)
+    public async Task ThenTheAnswerIs(string expectedStatus)
     {
         Assert.Equal(expectedStatus, _response!.StatusCode.ToString());
     }
@@ -82,11 +104,12 @@ public class ProductManagementSteps
     {
         _response = await _client.GetAsync($"api/products/stock-level?min={min}&max={max}");
     }
- 
+
     [Then(@"has ""(.*)"" results")]
     public async Task TheAmountOfResultsIs(string expectedResults)
     {
         var product = await _response!.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>();
-        Assert.Equal(int.Parse(expectedResults), product==null?0:product.Count());
+        Assert.Equal(int.Parse(expectedResults), product == null ? 0 : product.Count());
     }
+ 
 }
