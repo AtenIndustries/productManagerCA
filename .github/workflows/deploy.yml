@@ -1,14 +1,14 @@
 name: Build, test, migrate and package the ProductManager.API
 on:
   push:
-    branches: [main]
+    branches: [feature/cicd]
   pull_request:
-    branches: [main]
+    branches: [feature/cicd]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    services:
+    services: #needed for the integration tests to run
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
