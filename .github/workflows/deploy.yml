@@ -8,6 +8,14 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_SA_PASSWORD: YourStrong!Passw0rd
+        ports:
+          - 1433:1433    
     steps:
       - uses: actions/checkout@v4
       
@@ -24,3 +32,4 @@ jobs:
 
       - name: Test
         run: dotnet test --no-build --configuration Release
+        
