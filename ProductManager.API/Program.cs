@@ -25,9 +25,20 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddOpenApi();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("defaultConnectionString")
-        ?? throw new InvalidOperationException("Connection string"
-        + "'defaultConnectionString' not found.");
+    builder.Configuration.GetConnectionString("defaultConnectionString") ;
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    // Verifies if execution comes from EF Core CLI
+    if (EF.IsDesignTime)
+    {
+        connectionString = "Server=design-time-fake;Database=FakeDB;User Id=fake;Password=fake;Encrypt=True;";
+    }
+    else
+    {
+        throw new InvalidOperationException("Connection string 'defaultConnectionString' not found.");
+    }
+}
 
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, options) =>
     options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL"))
