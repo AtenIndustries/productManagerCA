@@ -25,11 +25,13 @@ jobs:
 
       - name: Install EF Core CLI
         run: dotnet tool install --global dotnet-ef
-        
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: Create EF Migration Bundle
+        env:
+          ConnectionStrings__defaultConnectionString: "" #Will be replaced in bundle
         run: dotnet ef migrations bundle --project ProductManager.DAL/ProductManager.DAL.csproj  --startup-project ProductManager.API/ProductManager.API.csproj --output efbundle.exe
       - name: Run EF Core Migrations
         run: ./efbundle.exe --connection "${{ secrets.AZURE_SQL_CONNECTIONSTRING }}"
