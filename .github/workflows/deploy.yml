@@ -1,46 +1,26 @@
 name: Build, test, migrate and package the ProductManager.API
-
 on:
   push:
-    branches: [feature/cicd]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build-test-migrate:
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code to runner machine
-        uses: actions/checkout@v4
-
-      # Loads .NET SDK
-      - name: Setup .NET 10
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: '10.0.x'
 
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore
 
-      - name: Build API
+      - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Run Tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
-
-      - name: Install EF Core CLI
-        run: dotnet tool install --global dotnet-ef
-
-      - name: Run EF DB Update
-        env:
-          AZURE_SQL_CONNECTIONSTRING: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
-        run: |
-          dotnet ef database update --project ProductManager.DAL --startup-project ProductManager.API --connection "$AZURE_SQL_CONNECTIONSTRING"
-
-      - name: Publish Web API
-        run: dotnet publish --configuration Release --output ./publish
-        
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-build
-          path: ./publish
+      - name: Test
+        run: dotnet test --no-build --configuration Release
