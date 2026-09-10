@@ -32,6 +32,7 @@ jobs:
           files: 'ProductManager.API/appsettings.json' 
         env: 
           ConnectionStrings.defaultConnectionString: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+          JWT.Key: ${{ secrets.PRODUCTMANAGER_JWT_KEY }}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
