@@ -31,8 +31,8 @@ jobs:
         with: 
           files: 'ProductManager.API/appsettings.json' 
         env: 
-          ConnectionStrings.DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
-          
+          ConnectionStrings.defaultConnectionString: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
