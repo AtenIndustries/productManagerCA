@@ -41,7 +41,13 @@ if (string.IsNullOrEmpty(connectionString))
 }
 
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, options) =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("ProductManager.DAL"))
+    options.UseSqlServer(connectionString, b =>
+    {
+        b.MigrationsAssembly("ProductManager.DAL");
+        b.EnableRetryOnFailure(maxRetryCount:5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd:null);
+    })
+    
+    
     //Adds interceptor to fill audit fields for IAuditable entities
     .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
 
