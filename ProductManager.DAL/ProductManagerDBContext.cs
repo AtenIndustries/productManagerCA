@@ -37,8 +37,8 @@ public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> o
          var connectionString = Environment.GetEnvironmentVariable("EF_MIGRATIONS_CONNECTION")
             ?? "Server=design-time-fake;Database=FakeDB;User Id=fake;Password=fake;Encrypt=True;";
         optionsBuilder.UseSqlServer(
-            connectionString, // ou ler de uma variável de ambiente
-            options => options.EnableRetryOnFailure());
+            connectionString,  
+            options => options.EnableRetryOnFailure(maxRetryCount:5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd:null));
     }
 }
 }
