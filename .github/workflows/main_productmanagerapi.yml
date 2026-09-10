@@ -26,6 +26,13 @@ jobs:
       - name: Install EF Core CLI
         run: dotnet tool install --global dotnet-ef
 
+      - name: Replace connection string in app settings by connection string in github secret
+        uses: microsoft/variable-substitution@v1
+        with: 
+          files: 'ProductManager.API/appsettings.json' 
+        env: 
+          ConnectionStrings.DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+          
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
