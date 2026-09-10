@@ -2,7 +2,7 @@
 
 A demo REST API built under ASP.NET Core 10 to showcase a simple product management, with JWT authentication and distributed environment safe unique ID generation.
 
-Access the deployed azure version [here]((https://productmanagerapi-c6ephyf6dgcvh2bj.westus3-01.azurewebsites.net/index.html))
+Access the deployed azure version [here](https://productmanagerapi-c6ephyf6dgcvh2bj.westus3-01.azurewebsites.net/index.html)
 
 ## Features
 
