@@ -15,12 +15,12 @@ public class UserService(ProductManagerDBContext ctx) : IUserService
         return await _ctx.Users.AnyAsync(u => u.Username == username, ct);
     }
 
-    public async Task RegisterUser(RegisterUserDTO registerData, CancellationToken ct = default)
+    public async Task RegisterUser(string username, string password, CancellationToken ct = default)
     {
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerData.Password);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
         var newUser = new User
         {
-            Username = registerData.Username,
+            Username = username,
             PasswordHash = passwordHash
         };
         _ctx.Users.Add(newUser);

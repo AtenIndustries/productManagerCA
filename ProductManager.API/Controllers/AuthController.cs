@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using ProductManager.API.Contracts;
 
 namespace ProductManager.API.Controllers;
 
@@ -20,18 +21,18 @@ public class AuthController(ProductManagerDBContext context, IUserService userSe
 
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDTO request, CancellationToken ct)
+    public async Task<IActionResult> Register([FromBody] UserAuthenticationBody request, CancellationToken ct)
     {
         if (await _userService.HasUser(request.Username, ct))
         {
             return BadRequest("User already exists");
         }
-        await _userService.RegisterUser(request, ct);
+        await _userService.RegisterUser(request.Username, request.Password, ct);
         return Ok();
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserDTO request)
+    public async Task<IActionResult> Login([FromBody] UserAuthenticationBody request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user == null)
