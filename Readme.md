@@ -2,6 +2,8 @@
 
 A demo REST API built under ASP.NET Core 10 to showcase a simple product management, with JWT authentication and distributed environment safe unique ID generation.
 
+Access the deployed azure version [here]((https://productmanagerapi-c6ephyf6dgcvh2bj.westus3-01.azurewebsites.net/index.html))
+
 ## Features
 
 - CRUD operations for products
@@ -11,9 +13,6 @@ A demo REST API built under ASP.NET Core 10 to showcase a simple product managem
 - JWT-based authentication
 - Swagger/OpenAPI documentation
 - Basic CI/CD to build, test, migrate and deploy to Azure Cloud 
-
-> [!NOTE]
-> Access the deployed azure version [here]((https://productmanagerapi-c6ephyf6dgcvh2bj.westus3-01.azurewebsites.net/index.html))
 
 ## Prerequisites
 
