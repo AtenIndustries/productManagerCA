@@ -29,4 +29,16 @@ public class ProductManagerDBContext(DbContextOptions<ProductManagerDBContext> o
             new Product() { Id = 100005, Name = "Bag of nuts", Description = "Mix of nuts", Quantity = 20, ConcurrencyToken = [5, 5, 5, 5], CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), CreatedBy = "App" }
         );
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    if (!optionsBuilder.IsConfigured)
+    {
+         var connectionString = Environment.GetEnvironmentVariable("EF_MIGRATIONS_CONNECTION")
+            ?? "Server=design-time-fake;Database=FakeDB;User Id=fake;Password=fake;Encrypt=True;";
+        optionsBuilder.UseSqlServer(
+            connectionString, // ou ler de uma variável de ambiente
+            options => options.EnableRetryOnFailure());
+    }
+}
 }
