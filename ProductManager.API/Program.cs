@@ -46,11 +46,8 @@ builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, o
         b.MigrationsAssembly("ProductManager.DAL");
         b.EnableRetryOnFailure(maxRetryCount:5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd:null);
     })
-    
-    
     //Adds interceptor to fill audit fields for IAuditable entities
     .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
-
 
 // Configuration of JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -76,6 +73,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
+//Configuration of Automapper
+builder.Services.AddAutoMapper(am=>{am.LicenseKey=builder.Configuration["AutomapperLicenceKey"];}, typeof(Program).Assembly);
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IUserService, ProductManager.BAL.Services.UserService>();
 builder.Services.AddHttpContextAccessor();

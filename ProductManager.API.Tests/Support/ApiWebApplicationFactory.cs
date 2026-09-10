@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions; 
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using ProductManager.BAL.Exceptions;
 using ProductManager.CommonLib.Interceptors;
 using ProductManager.DAL;
@@ -19,11 +19,13 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
     private readonly string _dbName = $"ApiTestDb_{Guid.NewGuid()}";
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((context,services) =>
         {
+            var automapperLicenceKey = context.Configuration["AutoMapper:LicenseKey"];
+
             services.RemoveAll<DbContextOptions<ProductManagerDBContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<ProductManagerDBContext>>();
-
+            services.AddAutoMapper(am => { am.LicenseKey = automapperLicenceKey; }, typeof(Program).Assembly);
             services.AddDbContext<ProductManagerDBContext>(options =>
                 options.UseInMemoryDatabase(_dbName)
                 .AddInterceptors(new ConcurrencyTokenInterceptor<DAL.Models.Product>(nameof(DAL.Models.Product.ConcurrencyToken)))

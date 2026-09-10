@@ -4,18 +4,23 @@ using ProductManager.API.Controllers;
 using ProductManager.BAL.DTO;
 using ProductManager.BAL.Services.Interfaces;
 using ProductManager.API.Contracts;
+using AutoMapper;
+using ProductManager.API.Tests.Support;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProductManager.API.Tests.ProductControllerTests;
 
-public class ProductsSearchTests
+public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
 {
     private readonly Mock<IProductService> _serviceMock;
     private readonly ProductsController _controller;
 
-    public ProductsSearchTests()
+    public ProductsSearchTests(ApiWebApplicationFactory factory)
     {
         _serviceMock = new Mock<IProductService>();
-        _controller = new ProductsController(_serviceMock.Object);
+        IMapper _mapper = factory.Services.GetRequiredService<IMapper>();
+        _controller = new ProductsController(_serviceMock.Object, _mapper);
+
     }
 
     [Fact]
@@ -146,12 +151,16 @@ public class ProductsSearchTests
     {
         int id = 1;
         ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductDataBody prdReqBody = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
-            .Setup(s => s.CreateAsync(prd, CancellationToken.None))
+            .Setup(s => s.CreateAsync(
+                //The It.Is is needed because automapper creates new instances of ProductDataDTO 
+                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3), 
+                CancellationToken.None))
             .ReturnsAsync(id);
 
-        var result = await _controller.Create(prd, CancellationToken.None);
+        var result = await _controller.Create(prdReqBody, CancellationToken.None);
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         int resultId = -1;
         if (createdResult is not null && createdResult.RouteValues is not null && createdResult.RouteValues["id"] is int v)
@@ -166,12 +175,15 @@ public class ProductsSearchTests
     {
         int id = 1;
         ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductDataBody prdReqBody = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
-            .Setup(s => s.CreateAsync(prd, CancellationToken.None))
+            .Setup(s => s.CreateAsync(
+                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3),
+                CancellationToken.None))
             .ReturnsAsync(id);
 
-        var result = await _controller.Create(prd, CancellationToken.None);
+        var result = await _controller.Create(prdReqBody, CancellationToken.None);
         var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
         int resultId = -1;
         if (createdResult is not null && createdResult.RouteValues is not null && createdResult.RouteValues["id"] is int v)
@@ -185,15 +197,16 @@ public class ProductsSearchTests
     [Fact]
     public async Task Update_ReturnsOk_WhenProductIsUpdated()
     {
-        int id = 1;
-        ProductDataDTO updData = new() { Name = "PRD", Quantity = 3 };
+        int id = 1; 
+        ProductDataBody updDataReqBody = new() { Name = "PRD", Quantity = 3 };
         ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
-            .Setup(s => s.UpdateAsync(id, updData, CancellationToken.None))
+            .Setup(s => s.UpdateAsync(id, 
+                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3), CancellationToken.None))
             .ReturnsAsync(prd);
 
-        var result = await _controller.Update(id, updData, CancellationToken.None);
+        var result = await _controller.Update(id, updDataReqBody, CancellationToken.None);
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(prd, okResult.Value);
     }

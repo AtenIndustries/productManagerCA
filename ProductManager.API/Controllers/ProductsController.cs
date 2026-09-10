@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductManager.API.Contracts;
@@ -8,9 +9,10 @@ namespace ProductManager.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController(IProductService productService) : Controller
+public class ProductsController(IProductService productService, IMapper mapper) : Controller
 {
     private readonly IProductService _productService = productService;
+    private readonly IMapper _mapper=mapper;
 
     /// <summary>
     /// Gets product by id
@@ -56,9 +58,10 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ProductDTO>> Create(ProductDataDTO product, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Create(ProductDataBody product, CancellationToken ct)
     {
-        int id = await _productService.CreateAsync(product, ct);
+        ProductDataDTO createDataDto = _mapper.Map<ProductDataDTO>(product);
+        int id = await _productService.CreateAsync(createDataDto, ct);
         ProductDTO? created = await _productService.GetAsync(id, ct);
         return CreatedAtAction(nameof(Create), new { id }, created);
     }
@@ -82,9 +85,9 @@ public class ProductsController(IProductService productService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ProductDTO>> Update(int id, ProductDataDTO product, CancellationToken ct)
+    public async Task<ActionResult<ProductDTO>> Update(int id, ProductDataBody product, CancellationToken ct)
     {
-        ProductDTO updPrd = await _productService.UpdateAsync(id, product, ct);
+        ProductDTO updPrd = await _productService.UpdateAsync(id, _mapper.Map<ProductDataDTO>(product), ct);
         return Ok(updPrd);
     }
 
