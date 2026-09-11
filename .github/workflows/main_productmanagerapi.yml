@@ -14,7 +14,8 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
-
+    env:
+      EF_MIGRATIONS_CONNECTION: "${{ secrets.AZURE_SQL_CONNECTIONSTRING }}" #Will be replaced in bundle
     steps:
       - uses: actions/checkout@v4
 
@@ -38,8 +39,6 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Create EF Migration Bundle
-        env:
-          EF_MIGRATIONS_CONNECTION: "${{ secrets.AZURE_SQL_CONNECTIONSTRING }}" #Will be replaced in bundle
         run: dotnet ef migrations bundle --project ProductManager.DAL/ProductManager.DAL.csproj  --startup-project ProductManager.API/ProductManager.API.csproj --output efbundle.exe --verbose
       - name: Run EF Core Migrations
         run: ./efbundle.exe --connection "${{ secrets.AZURE_SQL_CONNECTIONSTRING }}" --verbose
