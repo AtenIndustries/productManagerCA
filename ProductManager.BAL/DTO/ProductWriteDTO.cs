@@ -4,7 +4,7 @@ using ProductManager.DAL.Models;
 
 namespace ProductManager.BAL.DTO;
 
-public class ProductDataDTO
+public class ProductWriteDTO
 { 
     public string Name { get; set; } = string.Empty; 
     public string? Description { get; set; } 

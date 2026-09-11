@@ -93,7 +93,7 @@ public class ProductManagementSteps
     [Then(@"product stock becomes ""(.*)""")]
     public async Task ThenTheStockIs(string expectedStock)
     {
-        var product = await _response!.Content.ReadFromJsonAsync<ProductDTO>();
+        var product = await _response!.Content.ReadFromJsonAsync<ProductReadDTO>();
         Assert.Equal(int.Parse(expectedStock), product!.Quantity);
     }
 
@@ -106,7 +106,7 @@ public class ProductManagementSteps
     [Then(@"has ""(.*)"" results")]
     public async Task TheAmountOfResultsIs(string expectedResults)
     {
-        var product = await _response!.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>();
+        var product = await _response!.Content.ReadFromJsonAsync<IEnumerable<ProductReadDTO>>();
         Assert.Equal(int.Parse(expectedResults), product == null ? 0 : product.Count());
     }
 

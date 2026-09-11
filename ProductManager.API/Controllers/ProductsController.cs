@@ -21,11 +21,11 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     /// <param name="ct"></param> 
     /// <returns>Product with a given id</returns> 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProductReadDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDTO>> Get(int id, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> Get(int id, CancellationToken ct)
     {
-        ProductDTO? product = await _productService.GetAsync(id, ct);
+        ProductReadDTO? product = await _productService.GetAsync(id, ct);
         return product is null ? NotFound() : Ok(product);
     }
 
@@ -34,11 +34,11 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     /// </summary> 
     /// <returns>List of found products</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProductReadDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<ProductDTO>>> Get(CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<ProductReadDTO>>> Get(CancellationToken ct)
     {
-        IEnumerable<ProductDTO>? products = await _productService.GetAllAsync(ct);
+        IEnumerable<ProductReadDTO>? products = await _productService.GetAllAsync(ct);
         return Ok(products);
     }
 
@@ -54,15 +54,15 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     /// <response code="409">Product already exists.</response>
     [HttpPost]
     [Authorize]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProductReadDTO), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ProductDTO>> Create(ProductDataBody product, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> Create(ProductDataBody product, CancellationToken ct)
     {
-        ProductDataDTO createDataDto = _mapper.Map<ProductDataDTO>(product);
+        ProductWriteDTO createDataDto = _mapper.Map<ProductWriteDTO>(product);
         int id = await _productService.CreateAsync(createDataDto, ct);
-        ProductDTO? created = await _productService.GetAsync(id, ct);
+        ProductReadDTO? created = await _productService.GetAsync(id, ct);
         return CreatedAtAction(nameof(Create), new { id }, created);
     }
 
@@ -85,9 +85,9 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ProductDTO>> Update(int id, ProductDataBody product, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> Update(int id, ProductDataBody product, CancellationToken ct)
     {
-        ProductDTO updPrd = await _productService.UpdateAsync(id, _mapper.Map<ProductDataDTO>(product), ct);
+        ProductReadDTO updPrd = await _productService.UpdateAsync(id, _mapper.Map<ProductWriteDTO>(product), ct);
         return Ok(updPrd);
     }
 
@@ -126,7 +126,7 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDTO>> IncrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> IncrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
         return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, stockUpdateQuery.Delta, ct));
     }
@@ -147,7 +147,7 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDTO>> DecrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> DecrementStock([FromRoute] StockUpdateQuery stockUpdateQuery, CancellationToken ct)
     {
         return Ok(await _productService.AdjustStockAsync(stockUpdateQuery.Id, -1 * stockUpdateQuery.Delta, ct));
     }
@@ -160,10 +160,10 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     /// <param name="ct"></param>
     /// <returns>Product updated</returns>
     [HttpGet("search")]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ProductDTO>> Search([FromQuery] string? name, CancellationToken ct)
+    [ProducesResponseType(typeof(ProductReadDTO), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ProductReadDTO>> Search([FromQuery] string? name, CancellationToken ct)
     {
-        IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(name, null, null, ct);
+        IEnumerable<ProductReadDTO>? products = await _productService.SearchByAsync(name, null, null, ct);
         return Ok(products);
     }
 
@@ -175,11 +175,11 @@ public class ProductsController(IProductService productService, IMapper mapper) 
     /// <returns></returns>
     /// <response code="400">Invalid request data.</response>
     [HttpGet("stock-level")]
-    [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProductReadDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ProductDTO>> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
+    public async Task<ActionResult<ProductReadDTO>> Search([FromQuery] StockLevelQuery query, CancellationToken ct)
     {
-        IEnumerable<ProductDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
+        IEnumerable<ProductReadDTO>? products = await _productService.SearchByAsync(null, query.Min, query.Max, ct);
         return Ok(products);
     }
 }

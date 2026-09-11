@@ -15,21 +15,21 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
     private readonly ProductManagerDBContext _ctx = ctx;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<ProductDTO?> GetAsync(int id, CancellationToken ct = default)
+    public async Task<ProductReadDTO?> GetAsync(int id, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, ct);
-        return entity is null ? null : _mapper.Map<ProductDTO>(entity);
+        return entity is null ? null : _mapper.Map<ProductReadDTO>(entity);
     }
 
-    public async Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<ProductReadDTO>?> GetAllAsync(CancellationToken ct = default)
     {
-        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync(ct);
+        IEnumerable<ProductReadDTO>? entities = await _ctx.Products.AsNoTracking().ProjectTo<ProductReadDTO>(_mapper.ConfigurationProvider).ToListAsync(ct);
         return entities;
     }
 
-    public async Task<int> CreateAsync(ProductDataDTO productDTO, CancellationToken ct = default)
+    public async Task<int> CreateAsync(ProductWriteDTO writeData, CancellationToken ct = default)
     {
-        Product entity = _mapper.Map<Product>(productDTO);
+        Product entity = _mapper.Map<Product>(writeData);
         entity.Quantity = Math.Max(entity.Quantity, 0);
         _ctx.Add(entity);
         try
@@ -38,21 +38,21 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            throw new ProductConcurrencyException(productDTO.Name, ex);
+            throw new ProductConcurrencyException(writeData.Name, ex);
         }
         catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
         {
-            throw new DuplicateProductException(productDTO, ex);
+            throw new DuplicateProductException(writeData, ex);
         }
         catch (DbUpdateException ex)
         {
-            throw new ProductPersistenceException(productDTO.Name, ex);
+            throw new ProductPersistenceException(writeData.Name, ex);
         }
 
         return entity.Id;
     }
 
-    public async Task<ProductDTO> UpdateAsync(int id, ProductDataDTO updateData, CancellationToken ct = default)
+    public async Task<ProductReadDTO> UpdateAsync(int id, ProductWriteDTO updateData, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(id);
@@ -85,7 +85,7 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
         {
             throw new ProductPersistenceException(id, ex);
         }
-        return _mapper.Map<ProductDTO>(entity);
+        return _mapper.Map<ProductReadDTO>(entity);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
@@ -117,17 +117,17 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
             && (sqlEx.Number == 2601 || sqlEx.Number == 2627);
     }
 
-    public async Task<IEnumerable<ProductDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default)
+    public async Task<IEnumerable<ProductReadDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default)
     {
-        List<ProductDTO>? products = await _ctx.Products.AsNoTracking()
+        List<ProductReadDTO>? products = await _ctx.Products.AsNoTracking()
                 .Where(p => (name == null || p.Name.ToLower() == name.ToLower() || p.Name.ToLower().Contains(name.ToLower()))
                 && (min == null || p.Quantity >= min) && (max == null || p.Quantity <= max))
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .ProjectTo<ProductReadDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
         return products;
     }
 
-    public async Task<ProductDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default)
+    public async Task<ProductReadDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default)
     {
         Product entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
             ?? throw new ProductNotFoundException(id);
@@ -143,6 +143,6 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
             throw new ProductConcurrencyException(id, ex);
         }
 
-        return _mapper.Map<ProductDTO>(entity);
+        return _mapper.Map<ProductReadDTO>(entity);
     }
 }

@@ -20,8 +20,8 @@ public class AdjustStockAsyncTests : ProductServiceTests
         ProductService service = CreateProductService(ctx);
 
         //Gets original product data to determine if stock was updated
-        ProductDTO? prd = await service.GetAsync(id, CancellationToken.None);
-        ProductDTO adjPrd = await service.AdjustStockAsync(id, delta, CancellationToken.None);
+        ProductReadDTO? prd = await service.GetAsync(id, CancellationToken.None);
+        ProductReadDTO adjPrd = await service.AdjustStockAsync(id, delta, CancellationToken.None);
         Assert.NotNull(prd);
         Assert.Equal(id, adjPrd.Id);
         Assert.Equal(Math.Max(prd.Quantity + delta, 0), adjPrd.Quantity);

@@ -16,7 +16,7 @@ public class UpdateAsyncTests : ProductSearchTests
     public async Task UpdateAsync_ValidParams_UpdatesProductSuccessfully(int updId, string newName, string? newDescription, int newQuantity)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductDataDTO updPrd = new()
+        ProductWriteDTO updPrd = new()
         {
             Name = newName,
             Quantity = newQuantity,
@@ -25,7 +25,7 @@ public class UpdateAsyncTests : ProductSearchTests
 
         ProductService service = CreateProductService(ctx);
 
-        ProductDTO prd = await service.UpdateAsync(updId, updPrd, CancellationToken.None);
+        ProductReadDTO prd = await service.UpdateAsync(updId, updPrd, CancellationToken.None);
         Assert.Equal(updId, prd.Id);
 
         Product? updEntity = await ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == updId);
@@ -48,7 +48,7 @@ public class UpdateAsyncTests : ProductSearchTests
         Assert.NotNull(entity);
         ctx.ChangeTracker.Clear();
 
-        ProductDataDTO updPrd = new()
+        ProductWriteDTO updPrd = new()
         {
             Quantity = newQuantity,
             Name = entity.Name,
@@ -71,7 +71,7 @@ public class UpdateAsyncTests : ProductSearchTests
         ctx.ChangeTracker.Clear();
 
         ProductService service = CreateProductService(ctx);
-        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new ProductDataDTO(), CancellationToken.None));
+        await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new ProductWriteDTO(), CancellationToken.None));
     }
 
     [Theory]
@@ -83,7 +83,7 @@ public class UpdateAsyncTests : ProductSearchTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductDataDTO updPrd = new()
+        ProductWriteDTO updPrd = new()
         {
             Name = updName,
             Quantity = updQuantity
@@ -103,7 +103,7 @@ public class UpdateAsyncTests : ProductSearchTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductDataDTO updPrd = new()
+        ProductWriteDTO updPrd = new()
         {
             Name = "PRD1",
             Quantity = -3
@@ -133,7 +133,7 @@ public class UpdateAsyncTests : ProductSearchTests
         var entity = await ctx.Products.FirstAsync(p => p.Id == 1);
         ctx.Entry(entity).OriginalValues[nameof(Product.ConcurrencyToken)] = new byte[] { 2, 2, 2, 2 };
 
-        ProductDataDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
+        ProductWriteDTO updateDto = new() { Name = "PRD1-Upd", Quantity = 5 };
 
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.UpdateAsync(1, updateDto, CancellationToken.None));
     }

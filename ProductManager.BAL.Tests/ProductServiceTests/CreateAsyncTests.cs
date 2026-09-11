@@ -31,7 +31,7 @@ public class CreateAsyncTests : ProductServiceTests
         {
             string name = names[i];
             Exception? exception = await Record.ExceptionAsync(async () => await service.CreateAsync(
-            new ProductDTO { Name = name, Quantity = fixedQuantity },
+            new ProductReadDTO { Name = name, Quantity = fixedQuantity },
             CancellationToken.None));
             hadException = exception is not null;
         }
@@ -43,7 +43,7 @@ public class CreateAsyncTests : ProductServiceTests
     public async Task CreateAsync_NegativeQuantity_IsSetToZero()
     {
         await using var ctx = ContextGenerators.CreateCtxWConcurrencyTknAndUnkCnstrntInterceptor();
-        ProductDTO newPrd = new()
+        ProductReadDTO newPrd = new()
         {
             Name = "PRD1",
             Quantity = -3
@@ -65,6 +65,6 @@ public class CreateAsyncTests : ProductServiceTests
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
         ProductService service = CreateProductService(ctx);
-        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO { Quantity = 2, Name = "PRD" }));
+        await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductReadDTO { Quantity = 2, Name = "PRD" }));
     }
 }

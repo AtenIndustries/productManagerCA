@@ -7,11 +7,11 @@ namespace ProductManager.BAL.Services.Interfaces;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default);
-    Task<ProductDTO?> GetAsync(int id, CancellationToken ct = default);
-    Task<int> CreateAsync(ProductDataDTO product, CancellationToken ct = default);
-    Task<ProductDTO> UpdateAsync(int id, ProductDataDTO updateData, CancellationToken ct = default);
+    Task<IEnumerable<ProductReadDTO>?> GetAllAsync(CancellationToken ct = default);
+    Task<ProductReadDTO?> GetAsync(int id, CancellationToken ct = default);
+    Task<int> CreateAsync(ProductWriteDTO createData, CancellationToken ct = default);
+    Task<ProductReadDTO> UpdateAsync(int id, ProductWriteDTO updateData, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
-    Task<IEnumerable<ProductDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default);
-    Task<ProductDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default);
+    Task<IEnumerable<ProductReadDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default);
+    Task<ProductReadDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default);
 }

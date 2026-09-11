@@ -26,7 +26,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task GetById_ReturnsOk_WhenProductExists()
     {
-        var product = new ProductDTO { Name = "PRD", Quantity = 8 };
+        var product = new ProductReadDTO { Name = "PRD", Quantity = 8 };
 
         _serviceMock
             .Setup(s => s.GetAsync(1, It.IsAny<CancellationToken>()))
@@ -43,7 +43,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     {
         _serviceMock
             .Setup(s => s.GetAsync(999, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ProductDTO?)null);
+            .ReturnsAsync((ProductReadDTO?)null);
 
         var result = await _controller.Get(999, CancellationToken.None);
 
@@ -53,10 +53,10 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task GetAll_ReturnsOkAndProducts_WhenProductsExist()
     {
-        IEnumerable<ProductDTO> products = [
-            new ProductDTO{   Name="PRD1", Quantity=2},
-            new ProductDTO{   Name="PRD2", Quantity=3},
-            new ProductDTO{  Name="PRD3", Quantity=3},
+        IEnumerable<ProductReadDTO> products = [
+            new ProductReadDTO{   Name="PRD1", Quantity=2},
+            new ProductReadDTO{   Name="PRD2", Quantity=3},
+            new ProductReadDTO{  Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.GetAllAsync(CancellationToken.None))
@@ -71,7 +71,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task GetAll_ReturnsOk_EvenWhenNoProductsExist()
     {
-        IEnumerable<ProductDTO> empty = [];
+        IEnumerable<ProductReadDTO> empty = [];
         _serviceMock
             .Setup(s => s.GetAllAsync(CancellationToken.None))
             .ReturnsAsync(empty);
@@ -86,10 +86,10 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task Search_ReturnsOk_WhenSearchHasResults()
     {
-        IEnumerable<ProductDTO> products = [
-            new ProductDTO{   Name="PRD1", Quantity=2},
-            new ProductDTO{   Name="PRD2", Quantity=3},
-            new ProductDTO{   Name="PRD3", Quantity=3},
+        IEnumerable<ProductReadDTO> products = [
+            new ProductReadDTO{   Name="PRD1", Quantity=2},
+            new ProductReadDTO{   Name="PRD2", Quantity=3},
+            new ProductReadDTO{   Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.SearchByAsync("PRD", null, null, CancellationToken.None))
@@ -104,7 +104,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task Search_ReturnsOk_EvenWhenSearchReturnsNoResults()
     {
-        IEnumerable<ProductDTO> empty = [];
+        IEnumerable<ProductReadDTO> empty = [];
         _serviceMock
             .Setup(s => s.SearchByAsync("PRD", null, null, CancellationToken.None))
             .ReturnsAsync(empty);
@@ -118,10 +118,10 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task SearchByStockLevel_ReturnsOk_WhenSearchHasResults()
     {
-        IEnumerable<ProductDTO> products = [
-            new ProductDTO{   Name="PRD1", Quantity=2},
-            new ProductDTO{  Name="PRD2", Quantity=3},
-            new ProductDTO{  Name="PRD3", Quantity=3},
+        IEnumerable<ProductReadDTO> products = [
+            new ProductReadDTO{   Name="PRD1", Quantity=2},
+            new ProductReadDTO{  Name="PRD2", Quantity=3},
+            new ProductReadDTO{  Name="PRD3", Quantity=3},
         ];
         _serviceMock
             .Setup(s => s.SearchByAsync(null, 1, 4, CancellationToken.None))
@@ -135,7 +135,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task SearchByStockLevel_ReturnsOk_EvenWhenSearchReturnsNoResults()
     {
-        IEnumerable<ProductDTO> empty = [];
+        IEnumerable<ProductReadDTO> empty = [];
         _serviceMock
             .Setup(s => s.SearchByAsync(null, 1, 4, CancellationToken.None))
             .ReturnsAsync(empty);
@@ -150,13 +150,13 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     public async Task Create_ReturnsCreated_WhenProductIsCreated()
     {
         int id = 1;
-        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
         ProductDataBody prdReqBody = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.CreateAsync(
-                //The It.Is is needed because automapper creates new instances of ProductDataDTO 
-                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3), 
+                //The It.Is is needed because automapper creates new instances of ProductWriteDTO 
+                It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3), 
                 CancellationToken.None))
             .ReturnsAsync(id);
 
@@ -174,12 +174,12 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     public async Task Update_ReturnsCreated_WhenProductIsCreated()
     {
         int id = 1;
-        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
         ProductDataBody prdReqBody = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.CreateAsync(
-                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3),
+                It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3),
                 CancellationToken.None))
             .ReturnsAsync(id);
 
@@ -199,11 +199,11 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     {
         int id = 1; 
         ProductDataBody updDataReqBody = new() { Name = "PRD", Quantity = 3 };
-        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
             .Setup(s => s.UpdateAsync(id, 
-                It.Is<ProductDataDTO>(p => p.Name == "PRD" && p.Quantity == 3), CancellationToken.None))
+                It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3), CancellationToken.None))
             .ReturnsAsync(prd);
 
         var result = await _controller.Update(id, updDataReqBody, CancellationToken.None);
@@ -227,8 +227,8 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     public async Task IncrementStock_ReturnsOk_WhenStockIncrements()
     {
         int id = 1;
-        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
-        ProductDTO incrementedPrd = new() { Name = "PRD", Quantity = 4 };
+        ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductReadDTO incrementedPrd = new() { Name = "PRD", Quantity = 4 };
         _serviceMock
             .Setup(s => s.AdjustStockAsync(id, 1, CancellationToken.None))
             .ReturnsAsync(incrementedPrd);
@@ -242,8 +242,8 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     public async Task DecrementStock_ReturnsOk_WhenStockIncrements()
     {
         int id = 1;
-        ProductDTO prd = new() { Name = "PRD", Quantity = 3 };
-        ProductDTO decrementedPrd = new() { Name = "PRD", Quantity = 2 };
+        ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
+        ProductReadDTO decrementedPrd = new() { Name = "PRD", Quantity = 2 };
         _serviceMock
             .Setup(s => s.AdjustStockAsync(id, -1, CancellationToken.None))
             .ReturnsAsync(decrementedPrd);

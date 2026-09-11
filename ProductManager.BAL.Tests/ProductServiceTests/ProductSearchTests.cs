@@ -23,7 +23,7 @@ public class ProductSearchTests :ProductServiceTests
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = CreateProductService(ctx);
-        IEnumerable<ProductDTO>? results = await service.SearchByAsync(name, min, max, CancellationToken.None);
+        IEnumerable<ProductReadDTO>? results = await service.SearchByAsync(name, min, max, CancellationToken.None);
         int numResults = results is null ? 0 : results.Count();
         Assert.Equal(expectedNumberOfResults, numResults);
     }
@@ -38,7 +38,7 @@ public class ProductSearchTests :ProductServiceTests
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = CreateProductService(ctx);
-        ProductDTO? prd = await service.GetAsync(searchId, CancellationToken.None);
+        ProductReadDTO? prd = await service.GetAsync(searchId, CancellationToken.None);
         bool hasResult = prd is not null;
         Assert.Equal(expectResult, hasResult);
     }
@@ -48,7 +48,7 @@ public class ProductSearchTests :ProductServiceTests
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ProductService service = CreateProductService(ctx);
-        IEnumerable<ProductDTO>? results = await service.GetAllAsync(CancellationToken.None);
+        IEnumerable<ProductReadDTO>? results = await service.GetAllAsync(CancellationToken.None);
         Assert.NotNull(results);
         Assert.NotEmpty(results);
         int lenght = results is null ? 0 : results.Count();

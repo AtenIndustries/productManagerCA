@@ -7,6 +7,6 @@ public class ApiMappingProfile : Profile
 {
     public ApiMappingProfile()
     { 
-        CreateMap<ProductDataBody, ProductDataDTO>();
+        CreateMap<ProductDataBody, ProductWriteDTO>();
     }
 }

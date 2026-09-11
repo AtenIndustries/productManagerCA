@@ -31,10 +31,10 @@ public class ProductConcurrencyException : Exception
 [Serializable]
 public class DuplicateProductException : Exception
 {
-    public DuplicateProductException(ProductDTO product, Exception? innerException) : base(product.Name.ToString(), innerException) { }
-    public DuplicateProductException(ProductDataDTO product, Exception? innerException) : base(product.Name.ToString(), innerException) { }
-    public DuplicateProductException(ProductDTO product) : base(product.Name.ToString()) { }
-    public DuplicateProductException(ProductDataDTO product) : base(product.Name.ToString()) { }
+    public DuplicateProductException(ProductReadDTO product, Exception? innerException) : base(product.Name.ToString(), innerException) { }
+    public DuplicateProductException(ProductWriteDTO product, Exception? innerException) : base(product.Name.ToString(), innerException) { }
+    public DuplicateProductException(ProductReadDTO product) : base(product.Name.ToString()) { }
+    public DuplicateProductException(ProductWriteDTO product) : base(product.Name.ToString()) { }
 
     public DuplicateProductException() : base() { }
 

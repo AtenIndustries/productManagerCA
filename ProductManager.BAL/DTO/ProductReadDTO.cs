@@ -7,7 +7,7 @@ using ProductManager.CommonLib.Interfaces;
 
 namespace ProductManager.BAL.DTO;
 
-public class ProductDTO : ProductDataDTO, IAuditable
+public class ProductReadDTO : ProductWriteDTO, IAuditable
 {
     public int Id { get; private set; }
     public byte[] ConcurrencyToken { get; private set; } = [];
