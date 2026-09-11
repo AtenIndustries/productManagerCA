@@ -80,7 +80,8 @@ public class UpdateAsyncTests : ProductSearchTests
     [InlineData(1, "PRD3", 5)]
     public async Task UpdateAsync_NameAlreadyUsedByAnotherProduct_ThrowsDuplicateProductException(int updId, string updName, int updQuantity)
     {
-        await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
+        await using var ctx = await ContextGenerators.CreateCtxWConcurrencyTknAndUnkCnstrntInterceptorWData();
+
         ctx.ChangeTracker.Clear();
 
         ProductWriteDTO updPrd = new()

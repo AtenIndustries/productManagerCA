@@ -57,15 +57,6 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(id);
 
-        //Note: The in memory database does not care about Unique constrainsts.
-        //      Just a piece of code to pass some unit tests.
-        bool duplicateExists = await _ctx.Products
-            .AnyAsync(p => p.Name == updateData.Name && p.Id != id, ct);
-        if (duplicateExists)
-        {
-            throw new DuplicateProductException(updateData);
-        }
-
         _ctx.Entry(entity).CurrentValues.SetValues(updateData);
         entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values 
 
