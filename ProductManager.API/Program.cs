@@ -38,7 +38,7 @@ if (string.IsNullOrEmpty(connectionString))
     {
         throw new InvalidOperationException("Connection string 'defaultConnectionString' not found.");
     }
-}
+} 
 
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, options) =>
     options.UseSqlServer(connectionString, b =>

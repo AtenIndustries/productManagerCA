@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
 
 namespace ProductManager.API.Contracts;
 
@@ -12,5 +12,7 @@ public class ProductDataBody
     [MaxLength(200, ErrorMessage = "Description cannot exceed 500 characters")]
     public string? Description { get; set; }
     [Range(0, int.MaxValue, ErrorMessage = "Quantity should be 0 or positive")]
-    public int Quantity { get; set; } 
+    public int Quantity { get; set; }
+
+    public string? CategoryName { get; set; }
 }

@@ -5,28 +5,22 @@ using ProductManager.CommonLib.Interfaces;
 
 namespace ProductManager.DAL.Models;
 
-[Index(nameof(Name), IsUnique = true)]
-public class Product : IAuditable
+[Index(nameof(CategoryName), IsUnique = true)]
+public class ProductCategory : IAuditable
 {
     [Key]
     public int Id { get; set; }
     [Column(TypeName = "varchar(200)")]
-    public required string Name { get; set; }
-    [Column(TypeName = "nvarchar(500)")]
-    public string? Description { get; set; }
-    public int Quantity { get; set; }
-
-    public int? ProductCategoryId { get; set; }
-
+    public required string CategoryName { get; set; }
     [Timestamp]
     public byte[] ConcurrencyToken { get; set; } = [];
-
     //Auditable fields
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    public ProductCategory? ProductCategory { get; set; }
+
+    public ICollection<Product>? Products { get; set; }
 }
 
