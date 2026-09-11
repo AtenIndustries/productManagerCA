@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProductManager.BAL.DTO; 
+using ProductManager.BAL.DTO;
 using ProductManager.BAL.Services.Interfaces;
 using ProductManager.DAL;
 using ProductManager.DAL.Models;

@@ -25,7 +25,7 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddOpenApi();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("defaultConnectionString") ;
+    builder.Configuration.GetConnectionString("defaultConnectionString");
 
 if (string.IsNullOrEmpty(connectionString))
 {
@@ -38,13 +38,13 @@ if (string.IsNullOrEmpty(connectionString))
     {
         throw new InvalidOperationException("Connection string 'defaultConnectionString' not found.");
     }
-} 
+}
 
 builder.Services.AddDbContext<ProductManager.DAL.ProductManagerDBContext>((sp, options) =>
     options.UseSqlServer(connectionString, b =>
     {
         b.MigrationsAssembly("ProductManager.DAL");
-        b.EnableRetryOnFailure(maxRetryCount:5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd:null);
+        b.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
     })
     //Adds interceptor to fill audit fields for IAuditable entities
     .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
@@ -74,7 +74,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 //Configuration of Automapper
-builder.Services.AddAutoMapper(am=>{am.LicenseKey=builder.Configuration["AutomapperLicenceKey"];}, typeof(Program).Assembly, typeof(ProductManager.BAL.DTO.DtoMappingProfile).Assembly);
+builder.Services.AddAutoMapper(am => { am.LicenseKey = builder.Configuration["AutomapperLicenceKey"]; }, typeof(Program).Assembly, typeof(ProductManager.BAL.DTO.DtoMappingProfile).Assembly);
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IUserService, ProductManager.BAL.Services.UserService>();
 builder.Services.AddHttpContextAccessor();

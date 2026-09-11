@@ -4,7 +4,7 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using ProductManager.API.Tests.Support;
 using ProductManager.BAL.DTO;
-using Reqnroll; 
+using Reqnroll;
 
 namespace ProductManager.API.Tests.BddTestsSamples.Steps;
 

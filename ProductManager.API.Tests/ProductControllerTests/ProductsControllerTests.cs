@@ -156,7 +156,7 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
         _serviceMock
             .Setup(s => s.CreateAsync(
                 //The It.Is is needed because automapper creates new instances of ProductWriteDTO 
-                It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3), 
+                It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3),
                 CancellationToken.None))
             .ReturnsAsync(id);
 
@@ -197,12 +197,12 @@ public class ProductsSearchTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task Update_ReturnsOk_WhenProductIsUpdated()
     {
-        int id = 1; 
+        int id = 1;
         ProductDataBody updDataReqBody = new() { Name = "PRD", Quantity = 3 };
         ProductReadDTO prd = new() { Name = "PRD", Quantity = 3 };
 
         _serviceMock
-            .Setup(s => s.UpdateAsync(id, 
+            .Setup(s => s.UpdateAsync(id,
                 It.Is<ProductWriteDTO>(p => p.Name == "PRD" && p.Quantity == 3), CancellationToken.None))
             .ReturnsAsync(prd);
 

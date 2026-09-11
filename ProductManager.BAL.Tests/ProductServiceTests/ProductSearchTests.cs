@@ -5,7 +5,7 @@ using ProductManager.BAL.DTO;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
-public class ProductSearchTests :ProductServiceTests
+public class ProductSearchTests : ProductServiceTests
 {
     [Theory]
     [InlineData(1, "PRD1", null, null)]

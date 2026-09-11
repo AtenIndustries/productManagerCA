@@ -12,7 +12,7 @@ namespace ProductManager.API.Controllers;
 public class ProductsController(IProductService productService, IMapper mapper) : Controller
 {
     private readonly IProductService _productService = productService;
-    private readonly IMapper _mapper=mapper;
+    private readonly IMapper _mapper = mapper;
 
     /// <summary>
     /// Gets product by id

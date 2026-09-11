@@ -18,20 +18,20 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
 
     public async Task<ProductReadDTO?> GetAsync(int id, CancellationToken ct = default)
     {
-        Product? entity = await _ctx.Products.AsNoTracking().Include(p=>p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id, ct);
+        Product? entity = await _ctx.Products.AsNoTracking().Include(p => p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id, ct);
         return entity is null ? null : _mapper.Map<ProductReadDTO>(entity);
     }
 
     public async Task<IEnumerable<ProductReadDTO>?> GetAllAsync(CancellationToken ct = default)
     {
-        IEnumerable<ProductReadDTO>? entities = await _ctx.Products.AsNoTracking().Include(p=>p.ProductCategory).ProjectTo<ProductReadDTO>(_mapper.ConfigurationProvider).ToListAsync(ct);
+        IEnumerable<ProductReadDTO>? entities = await _ctx.Products.AsNoTracking().Include(p => p.ProductCategory).ProjectTo<ProductReadDTO>(_mapper.ConfigurationProvider).ToListAsync(ct);
         return entities;
     }
 
     public async Task<int> CreateAsync(ProductWriteDTO writeData, CancellationToken ct = default)
     {
-        ProductCategory category = await GetCategory(writeData.CategoryName,ct);
-        
+        ProductCategory category = await GetCategory(writeData.CategoryName, ct);
+
         Product entity = _mapper.Map<Product>(writeData);
         entity.ProductCategory = category;
         entity.Quantity = Math.Max(entity.Quantity, 0);
@@ -58,14 +58,14 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
 
     public async Task<ProductReadDTO> UpdateAsync(int id, ProductWriteDTO updateData, CancellationToken ct = default)
     {
-        ProductCategory category = await GetCategory(updateData.CategoryName,ct);
+        ProductCategory category = await GetCategory(updateData.CategoryName, ct);
 
         Product? entity = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new ProductNotFoundException(id);
 
         _ctx.Entry(entity).CurrentValues.SetValues(updateData);
         entity.Quantity = Math.Max(entity.Quantity, 0);//Prevent negative values 
-        entity.ProductCategory=category;
+        entity.ProductCategory = category;
 
         try
         {
@@ -117,7 +117,7 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
 
     public async Task<IEnumerable<ProductReadDTO>?> SearchByAsync(string? name, int? min, int? max, CancellationToken ct = default)
     {
-        List<ProductReadDTO>? products = await _ctx.Products.AsNoTracking() 
+        List<ProductReadDTO>? products = await _ctx.Products.AsNoTracking()
                 .Where(p => (name == null || p.Name.ToLower() == name.ToLower() || p.Name.ToLower().Contains(name.ToLower()))
                 && (min == null || p.Quantity >= min) && (max == null || p.Quantity <= max))
                 .ProjectTo<ProductReadDTO>(_mapper.ConfigurationProvider)
@@ -127,7 +127,7 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
 
     public async Task<ProductReadDTO> AdjustStockAsync(int id, int delta, CancellationToken ct = default)
     {
-        Product entity = await _ctx.Products.Include(p=>p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id, ct)
+        Product entity = await _ctx.Products.Include(p => p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id, ct)
             ?? throw new ProductNotFoundException(id);
 
         entity.Quantity = Math.Max(entity.Quantity + delta, 0);
@@ -146,9 +146,9 @@ public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProd
 
     private async Task<ProductCategory> GetCategory(string? categoryName, CancellationToken ct = default)
     {
-        categoryName = string.IsNullOrWhiteSpace(categoryName) ? OTHER_CATEGORY: categoryName;
-        ProductCategory? category = await _ctx.ProductCategories.FirstOrDefaultAsync(c=>c.CategoryName == categoryName, ct);
-        category ??= new ProductCategory{CategoryName = categoryName};
+        categoryName = string.IsNullOrWhiteSpace(categoryName) ? OTHER_CATEGORY : categoryName;
+        ProductCategory? category = await _ctx.ProductCategories.FirstOrDefaultAsync(c => c.CategoryName == categoryName, ct);
+        category ??= new ProductCategory { CategoryName = categoryName };
         return category;
     }
 }

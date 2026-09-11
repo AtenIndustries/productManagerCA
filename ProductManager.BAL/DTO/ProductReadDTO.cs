@@ -15,5 +15,5 @@ public class ProductReadDTO : ProductWriteDTO, IAuditable
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
- 
+
 }

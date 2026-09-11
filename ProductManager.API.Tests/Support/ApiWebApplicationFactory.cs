@@ -20,15 +20,16 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
     private readonly string _dbName = $"ApiTestDb_{Guid.NewGuid()}";
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices((context,services) =>
+        builder.ConfigureServices((context, services) =>
         {
             var automapperLicenceKey = context.Configuration["AutoMapper:LicenseKey"];
 
             services.RemoveAll<DbContextOptions<ProductManagerDBContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<ProductManagerDBContext>>();
-            services.AddAutoMapper(am => { 
-                am.LicenseKey = automapperLicenceKey; 
-                am.AddProfile<DtoMappingProfile>();            
+            services.AddAutoMapper(am =>
+            {
+                am.LicenseKey = automapperLicenceKey;
+                am.AddProfile<DtoMappingProfile>();
             }, typeof(Program).Assembly);
             services.AddDbContext<ProductManagerDBContext>(options =>
                 options.UseInMemoryDatabase(_dbName)
