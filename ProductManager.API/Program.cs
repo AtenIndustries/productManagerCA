@@ -74,7 +74,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 //Configuration of Automapper
-builder.Services.AddAutoMapper(am=>{am.LicenseKey=builder.Configuration["AutomapperLicenceKey"];}, typeof(Program).Assembly);
+builder.Services.AddAutoMapper(am=>{am.LicenseKey=builder.Configuration["AutomapperLicenceKey"];}, typeof(Program).Assembly, typeof(ProductManager.BAL.DTO.DtoMappingProfile).Assembly);
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IProductService, ProductManager.BAL.Services.ProductService>();
 builder.Services.AddScoped<ProductManager.BAL.Services.Interfaces.IUserService, ProductManager.BAL.Services.UserService>();
 builder.Services.AddHttpContextAccessor();

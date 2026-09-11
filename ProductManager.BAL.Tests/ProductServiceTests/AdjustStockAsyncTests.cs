@@ -7,7 +7,7 @@ using ProductManager.DAL.Models;
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
-public class AdjustStockAsyncTests
+public class AdjustStockAsyncTests : ProductServiceTests
 {
     [Theory]
     [InlineData(1, 2)]
@@ -17,7 +17,7 @@ public class AdjustStockAsyncTests
     public async Task AdjustStockAsync_UpdatesProductQuantitySuccessfully_OnValidParams(int id, int delta)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
 
         //Gets original product data to determine if stock was updated
         ProductDTO? prd = await service.GetAsync(id, CancellationToken.None);
@@ -31,7 +31,7 @@ public class AdjustStockAsyncTests
     public async Task AdjustStockAsync_ThrowsProductNotFoundException_WhenUpdatingNonExisting()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductNotFoundException>(() => service.AdjustStockAsync(999, 500, CancellationToken.None));
     }
 
@@ -42,7 +42,7 @@ public class AdjustStockAsyncTests
         //Adds a product sync just to pass the search
         ctx.Products.Add(new Product() { Id = 999, Name = "PRD", ConcurrencyToken = [1, 2, 3, 4] });
         ctx.SaveChanges();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.AdjustStockAsync(999, 500, CancellationToken.None));
     }
 }

@@ -1,4 +1,6 @@
 using System.Data;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProductManager.BAL.DTO;
 using ProductManager.BAL.Exceptions;
@@ -8,25 +10,26 @@ using ProductManager.DAL.Models;
 
 namespace ProductManager.BAL.Services;
 
-public class ProductService(ProductManagerDBContext ctx) : IProductService
+public class ProductService(ProductManagerDBContext ctx, IMapper mapper) : IProductService
 {
     private readonly ProductManagerDBContext _ctx = ctx;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<ProductDTO?> GetAsync(int id, CancellationToken ct = default)
     {
         Product? entity = await _ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, ct);
-        return entity is null ? null : ProductDTO.FromEntity(entity);
+        return entity is null ? null : _mapper.Map<ProductDTO>(entity);
     }
 
     public async Task<IEnumerable<ProductDTO>?> GetAllAsync(CancellationToken ct = default)
     {
-        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().Select(p => ProductDTO.FromEntity(p)).ToListAsync(ct);
+        IEnumerable<ProductDTO>? entities = await _ctx.Products.AsNoTracking().ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync(ct);
         return entities;
     }
 
     public async Task<int> CreateAsync(ProductDataDTO productDTO, CancellationToken ct = default)
     {
-        Product entity = productDTO.ToEntity();
+        Product entity = _mapper.Map<Product>(productDTO);
         entity.Quantity = Math.Max(entity.Quantity, 0);
         _ctx.Add(entity);
         try
@@ -82,7 +85,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         {
             throw new ProductPersistenceException(id, ex);
         }
-        return ProductDTO.FromEntity(entity);
+        return _mapper.Map<ProductDTO>(entity);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
@@ -119,7 +122,7 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
         List<ProductDTO>? products = await _ctx.Products.AsNoTracking()
                 .Where(p => (name == null || p.Name.ToLower() == name.ToLower() || p.Name.ToLower().Contains(name.ToLower()))
                 && (min == null || p.Quantity >= min) && (max == null || p.Quantity <= max))
-                .Select(p => ProductDTO.FromEntity(p))
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
         return products;
     }
@@ -140,6 +143,6 @@ public class ProductService(ProductManagerDBContext ctx) : IProductService
             throw new ProductConcurrencyException(id, ex);
         }
 
-        return ProductDTO.FromEntity(entity);
+        return _mapper.Map<ProductDTO>(entity);
     }
 }

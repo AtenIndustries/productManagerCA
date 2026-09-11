@@ -7,7 +7,7 @@ using ProductManager.DAL.Models;
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
-public class UpdateAsyncTests
+public class UpdateAsyncTests : ProductSearchTests
 {
     [Theory]
     [InlineData(2, "PRD2-Upgraded", "PRD2-Upgraded is an upgraded version of PRD2", 4)]
@@ -23,7 +23,7 @@ public class UpdateAsyncTests
             Description = newDescription
         };
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
 
         ProductDTO prd = await service.UpdateAsync(updId, updPrd, CancellationToken.None);
         Assert.Equal(updId, prd.Id);
@@ -48,14 +48,14 @@ public class UpdateAsyncTests
         Assert.NotNull(entity);
         ctx.ChangeTracker.Clear();
 
-        ProductDataDTO updPrd = new ProductDataDTO
+        ProductDataDTO updPrd = new()
         {
             Quantity = newQuantity,
             Name = entity.Name,
             Description = entity.Description
         };
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         Exception? exception = await Record.ExceptionAsync(async () => await service.UpdateAsync(updId, updPrd, CancellationToken.None));
         Assert.False(exception is DuplicateProductException);
     }
@@ -70,7 +70,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductNotFoundException>(() => service.UpdateAsync(updId, new ProductDataDTO(), CancellationToken.None));
     }
 
@@ -89,7 +89,7 @@ public class UpdateAsyncTests
             Quantity = updQuantity
         };
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
 
         await Assert.ThrowsAsync<DuplicateProductException>(
             () => service.UpdateAsync(updId, updPrd, CancellationToken.None)
@@ -103,13 +103,13 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductDataDTO updPrd = new ProductDataDTO
+        ProductDataDTO updPrd = new()
         {
             Name = "PRD1",
             Quantity = -3
         };
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await service.UpdateAsync(1, updPrd, CancellationToken.None);
         Product? prd = await ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == 1);
 
@@ -127,7 +127,7 @@ public class UpdateAsyncTests
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
         ctx.ChangeTracker.Clear();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
 
         // Simulates that another entry already saved a different version
         var entity = await ctx.Products.FirstAsync(p => p.Id == 1);

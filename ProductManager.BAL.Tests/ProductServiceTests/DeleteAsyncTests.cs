@@ -4,7 +4,7 @@ using ProductManager.BAL.Exceptions;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
-public class DeleteAsyncTests
+public class DeleteAsyncTests : ProductServiceTests
 {
 
     [Theory]
@@ -20,7 +20,7 @@ public class DeleteAsyncTests
         ctx.Products.Add(new DAL.Models.Product { Id = 3, Name = "PRD3", ConcurrencyToken = [3, 3, 3, 3] });
         await ctx.SaveChangesAsync();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         Exception? exception = await Record.ExceptionAsync(async () => await service.DeleteAsync(delId, CancellationToken.None));
 
         if (exception is not null && exception is not ProductNotFoundException)
@@ -42,7 +42,7 @@ public class DeleteAsyncTests
         // Allows the insertion of some data to prevent ProductNotFoundExceptions 
         ctx.SaveChanges();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.DeleteAsync(1));
     }
 
@@ -57,7 +57,7 @@ public class DeleteAsyncTests
         //some data before changes anything is deleted, to prevent ProductNotFoundExceptions
         ctx.SaveChanges();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductPersistenceException>(() => service.DeleteAsync(1));
     }
 }

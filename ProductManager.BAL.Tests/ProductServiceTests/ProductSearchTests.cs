@@ -5,7 +5,7 @@ using ProductManager.BAL.DTO;
 
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
-public class ProductSearchTests
+public class ProductSearchTests :ProductServiceTests
 {
     [Theory]
     [InlineData(1, "PRD1", null, null)]
@@ -22,7 +22,7 @@ public class ProductSearchTests
     public async Task SearchByAsync_VariousNameAndStockFilters_ReturnsExpectedResultCount(int expectedNumberOfResults, string? name, int? min, int? max)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         IEnumerable<ProductDTO>? results = await service.SearchByAsync(name, min, max, CancellationToken.None);
         int numResults = results is null ? 0 : results.Count();
         Assert.Equal(expectedNumberOfResults, numResults);
@@ -37,7 +37,7 @@ public class ProductSearchTests
     public async Task GetAsync_ExistingOrNonExistingId_ReturnsExpectedResult(bool expectResult, int searchId)
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         ProductDTO? prd = await service.GetAsync(searchId, CancellationToken.None);
         bool hasResult = prd is not null;
         Assert.Equal(expectResult, hasResult);
@@ -47,7 +47,7 @@ public class ProductSearchTests
     public async Task GetAllAsync_NoFilter_ReturnsAllProducts()
     {
         await using var ctx = await ContextGenerators.CreateSimpleContextWithData();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         IEnumerable<ProductDTO>? results = await service.GetAllAsync(CancellationToken.None);
         Assert.NotNull(results);
         Assert.NotEmpty(results);

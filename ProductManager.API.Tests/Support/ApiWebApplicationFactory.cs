@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ProductManager.BAL.DTO;
 using ProductManager.BAL.Exceptions;
 using ProductManager.CommonLib.Interceptors;
 using ProductManager.DAL;
@@ -25,7 +26,10 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 
             services.RemoveAll<DbContextOptions<ProductManagerDBContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<ProductManagerDBContext>>();
-            services.AddAutoMapper(am => { am.LicenseKey = automapperLicenceKey; }, typeof(Program).Assembly);
+            services.AddAutoMapper(am => { 
+                am.LicenseKey = automapperLicenceKey; 
+                am.AddProfile<DtoMappingProfile>();            
+            }, typeof(Program).Assembly);
             services.AddDbContext<ProductManagerDBContext>(options =>
                 options.UseInMemoryDatabase(_dbName)
                 .AddInterceptors(new ConcurrencyTokenInterceptor<DAL.Models.Product>(nameof(DAL.Models.Product.ConcurrencyToken)))

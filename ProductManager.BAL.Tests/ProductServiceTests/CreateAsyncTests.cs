@@ -8,7 +8,7 @@ using ProductManager.BAL.Exceptions;
 namespace ProductManager.BAL.Tests.ProductServiceTests;
 
 
-public class CreateAsyncTests
+public class CreateAsyncTests : ProductServiceTests
 {
     [Theory]
     [InlineData(true, "PRD1")]
@@ -24,7 +24,7 @@ public class CreateAsyncTests
 
         await using var ctx = ContextGenerators.CreateCtxWConcurrencyTknAndUnkCnstrntInterceptor();
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         int fixedQuantity = 2;
         bool hadException = false;
         for (int i = 0; !hadException && i < names.Length; i++)
@@ -43,13 +43,13 @@ public class CreateAsyncTests
     public async Task CreateAsync_NegativeQuantity_IsSetToZero()
     {
         await using var ctx = ContextGenerators.CreateCtxWConcurrencyTknAndUnkCnstrntInterceptor();
-        ProductDTO newPrd = new ProductDTO
+        ProductDTO newPrd = new()
         {
             Name = "PRD1",
             Quantity = -3
         };
 
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await service.CreateAsync(newPrd, CancellationToken.None);
         Product? prd = await ctx.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == 1);
 
@@ -64,7 +64,7 @@ public class CreateAsyncTests
     public async Task CreateAsync_ConcurrentModificationDetected_ThrowsProductConcurrencyException()
     {
         await using var ctx = ContextGenerators.CreateContextWithForcedException<DbUpdateConcurrencyException>();
-        ProductService service = new(ctx);
+        ProductService service = CreateProductService(ctx);
         await Assert.ThrowsAsync<ProductConcurrencyException>(() => service.CreateAsync(new ProductDTO { Quantity = 2, Name = "PRD" }));
     }
 }
