@@ -16,6 +16,7 @@ public class ProductManagerDBContextFactory : IDesignTimeDbContextFactory<Produc
         var connectionString = Environment.GetEnvironmentVariable("EF_MIGRATIONS_CONNECTION")
             ?? BuildConfigurationConnectionString();
 
+        Console.WriteLine("Design time connection string:"+connectionString);
         optionsBuilder.UseSqlServer(connectionString);
 
         return new ProductManagerDBContext(optionsBuilder.Options);
